@@ -91,8 +91,14 @@ module.exports.limit = async (ctx, next) => {
   await next();
 };
 
+// этот флаг может передаваться в url и в теле запроса
+// используем один валидатор
 module.exports.isPublic = async (ctx, next) => {
   ctx.query.isPublic = !!ctx.query.isPublic;
+
+  if (ctx.request.body) {
+    ctx.request.body.isPublic = !!ctx.request.body.isPublic;
+  }
   await next();
 };
 

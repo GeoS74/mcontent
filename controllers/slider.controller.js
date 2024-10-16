@@ -28,7 +28,7 @@ module.exports.update = async (ctx) => {
   ctx.request.body.image = ctx.request?.files?.image
     ? await _processingImage(ctx.request.files.image) : undefined;
 
-  let slide = await _getSlide(ctx.params.id);
+  let slide = _getSlide(ctx.params.id);
 
   if (!slide) {
     if (ctx.request.files) {
@@ -42,6 +42,7 @@ module.exports.update = async (ctx) => {
   if (ctx.request.body.image) {
     _deleteFile(path.join(__dirname, `../files/images/slider/${slide.image.fileName}`));
   }
+
   slide = await _updateSlide(ctx.params.id, ctx.request.body);
 
   ctx.status = 200;
