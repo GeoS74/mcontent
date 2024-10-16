@@ -15,6 +15,7 @@ if (config.node.env === 'dev') {
 
 app.use(userRoutes.routes);
 app.use(userRoutes.static);
+app.use(sliderRoutes.publicRoutes);
 app.use(sliderRoutes.routes);
 app.use(sliderRoutes.static);
 

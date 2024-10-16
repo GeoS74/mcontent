@@ -31,17 +31,12 @@ const optional = {
   multipart: true,
 };
 
-const router = new Router({ prefix: '/api/mcontent/slider' });
-
 /*
-* все роуты доступны только при наличии access токена
-* CRUD операции выполняются по email-у, передаваемом в access токене
-* если проверка access токена выключена, срабатывает валидатор email
+* роут без проверки access токена
 */
+const publicRouter = new Router({ prefix: '/api/mcontent/slider/public' });
 
-router.use(accessCheck, emailCheck);
-
-router.get(
+publicRouter.get(
   '/search',
   validator.searchString,
   validator.lastId,
@@ -50,6 +45,17 @@ router.get(
 
   controller.search,
 );
+
+module.exports.publicRoutes = publicRouter.routes();
+
+/*
+* все роуты доступны только при наличии access токена
+* CRUD операции выполняются по email-у, передаваемом в access токене
+* если проверка access токена выключена, срабатывает валидатор email
+*/
+const router = new Router({ prefix: '/api/mcontent/slider' });
+
+router.use(accessCheck, emailCheck);
 
 router.get(
   '/:id',
