@@ -7,6 +7,7 @@ const userRoutes = require('./routes/user.routes');
 const sliderRoutes = require('./routes/slider.routes');
 const templatePageRoutes = require('./routes/templatePage.routes');
 const testimonialRoutes = require('./routes/testimonial.routes');
+const priceRoutes = require('./routes/price.routes');
 
 const app = new Koa();
 
@@ -17,12 +18,19 @@ if (config.node.env === 'dev') {
 
 app.use(userRoutes.routes);
 app.use(userRoutes.static);
+
 app.use(sliderRoutes.publicRoutes);
 app.use(sliderRoutes.routes);
 app.use(sliderRoutes.static);
+
 app.use(testimonialRoutes.publicRoutes);
 app.use(testimonialRoutes.routes);
 app.use(testimonialRoutes.static);
+
+app.use(priceRoutes.publicRoutes);
+app.use(priceRoutes.routes);
+app.use(priceRoutes.static);
+
 app.use(templatePageRoutes);
 
 module.exports = app;
