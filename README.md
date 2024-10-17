@@ -25,3 +25,7 @@
   updatedAt: дата обновления,
 }
 ```
+
+## Получить список шаблонов
+
+`GET /api/mcontent/template/pages`
