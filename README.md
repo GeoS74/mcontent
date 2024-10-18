@@ -26,8 +26,8 @@
 ```
 
 Получить слайд
-`GET /api/mcontent/static/images/slider/{filename}`
-где {filename} - это `fileName`
+`GET /api/mcontent/static/images/slider/{fileName}`
+где {fileName} - это `fileName`
 
 ## API отзывов
 
@@ -52,8 +52,25 @@
 ```
 
 Получить фото
-`GET /api/mcontent/static/images/testimonial/{filename}`
-где {filename} - это `fileName`
+`GET /api/mcontent/static/images/testimonial/{fileName}`
+где {fileName} - это `fileName`
+
+## API получения прайса
+
+Запрос всех слайдов
+`GET /api/mcontent/price/public`
+возвращает объект
+```
+{
+  fileName: имя,
+  createdAt: дата создания
+}
+```
+
+Скачать прайс
+`GET /api/mcontent/static/price/{fileName}`
+где {fileName} - это `fileName`
+
 
 ## Получить список шаблонов
 

@@ -36,15 +36,7 @@ const optional = {
 */
 const publicRouter = new Router({ prefix: '/api/mcontent/price/public' });
 
-publicRouter.get(
-  '/',
-  validator.searchString,
-  validator.lastId,
-  validator.limit,
-  validator.isPublic,
-
-  controller.search,
-);
+publicRouter.get('/', controller.get);
 
 module.exports.publicRoutes = publicRouter.routes();
 
@@ -60,18 +52,11 @@ router.use(accessCheck, emailCheck);
 router.post(
   '/',
   koaBody(optional),
-  validator.imageIsNotNull,
-  validator.title,
-  validator.message,
-  validator.isPublic,
+  validator.priceIsNotNull,
   controller.add,
 );
 
-router.delete(
-  '/:id',
-  validator.objectId,
-  controller.delete,
-);
+router.delete('/', controller.delete);
 
 module.exports.routes = router.routes();
 

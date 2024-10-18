@@ -1,7 +1,4 @@
 module.exports = (data) => ({
-  price: {
-    originalName: data.image.originalName,
-    fileName: data.image.fileName,
-  },
-  createdAt: data.createdAt
+  fileName: data.fileName,
+  createdAt: data.createdAt,
 });
