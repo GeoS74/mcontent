@@ -28,7 +28,7 @@ module.exports.update = async (ctx) => {
   ctx.request.body.image = ctx.request?.files?.image
     ? await _processingImage(ctx.request.files.image) : undefined;
 
-  let slide = _getSlide(ctx.params.id);
+  let slide = await _getSlide(ctx.params.id);
 
   if (!slide) {
     if (ctx.request.files) {
