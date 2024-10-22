@@ -78,7 +78,7 @@ function _addSlide({
   return Slide.create({
     title,
     message,
-    isPublic,
+    isPublic: !!isPublic,
     image,
   });
 }
@@ -94,7 +94,7 @@ function _updateSlide(id, {
     {
       title,
       message,
-      isPublic,
+      isPublic: !!isPublic,
       image,
     },
     {

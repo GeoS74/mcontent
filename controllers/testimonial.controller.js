@@ -80,7 +80,7 @@ function _addTestimonial({
     name,
     message,
     company,
-    isPublic,
+    isPublic: !!isPublic,
     photo,
   });
 }
@@ -98,7 +98,7 @@ function _updateTestimonial(id, {
       name,
       message,
       company,
-      isPublic,
+      isPublic: !!isPublic,
       photo,
     },
     {
