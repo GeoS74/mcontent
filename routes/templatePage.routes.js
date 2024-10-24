@@ -33,7 +33,7 @@ router.get('/', controller.getAll);
 
 router.patch(
   '/:alias',
-  koaBody(),
+  koaBody({ multipart: true }),
   validator.alias,
   validator.title,
   validator.description,
