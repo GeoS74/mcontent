@@ -41,7 +41,7 @@ module.exports.update = async (ctx) => {
 function _getAll() {
   return TemplatePage
     .find({})
-    .sort({ _id: -1 });
+    .sort({ _id: 1 });
 }
 
 function _getTemplate(alias) {
