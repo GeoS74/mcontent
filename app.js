@@ -31,6 +31,7 @@ app.use(priceRoutes.publicRoutes);
 app.use(priceRoutes.routes);
 app.use(priceRoutes.static);
 
-app.use(templatePageRoutes);
+app.use(templatePageRoutes.publicRoutes);
+app.use(templatePageRoutes.routes);
 
 module.exports = app;

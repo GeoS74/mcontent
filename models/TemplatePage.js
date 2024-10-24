@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const connection = require('../libs/connection');
 
 const Schema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     unique: 'Не уникальное значение {PATH}',
     required: 'не заполнено обязательное поле {PATH}',
@@ -12,6 +12,8 @@ const Schema = new mongoose.Schema({
     unique: 'Не уникальное значение {PATH}',
     required: 'не заполнено обязательное поле {PATH}',
   },
+  title: String,
+  description: String,
 }, {
   timestamps: true,
 });

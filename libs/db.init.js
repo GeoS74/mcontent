@@ -14,27 +14,27 @@ const TemplatePage = require('../models/TemplatePage');
 
   TemplatePage.insertMany([
     {
-      title: 'Главная страница сайта',
+      name: 'Главная страница сайта',
       tplFileName: 'index.html',
     },
     {
-      title: 'Каталог товаров',
+      name: 'Каталог товаров',
       tplFileName: 'products.html',
     },
     {
-      title: 'Страница товара',
+      name: 'Страница товара',
       tplFileName: 'product-single.html',
     },
     {
-      title: 'Страница о компании',
+      name: 'Страница о компании',
       tplFileName: 'about.html',
     },
     {
-      title: 'Страница контактов',
+      name: 'Страница контактов',
       tplFileName: 'contact.html',
     },
   ])
-    .then(() => logger.info('create and init collection "actions"'))
+    .then(() => logger.info('create and init collection "templatepages"'))
     .catch((error) => logger.warn(error.message))
     .finally(() => process.exit());
 })();

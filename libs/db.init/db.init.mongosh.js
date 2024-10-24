@@ -1,22 +1,22 @@
 db.templatepages.insertMany([
   {
-    title: 'Главная страница сайта',
-    tplFileName: 'index.html'
+    name: 'Главная страница сайта',
+    tplFileName: 'index.html',
   },
   {
-    title: 'Каталог товаров',
+    name: 'Каталог товаров',
     tplFileName: 'products.html'
   },
   {
-    title: 'Страница товара',
+    name: 'Страница товара',
     tplFileName: 'product-single.html'
   },
   {
-    title: 'Страница о компании',
+    name: 'Страница о компании',
     tplFileName: 'about.html'
   },
   {
-    title: 'Страница контактов',
+    name: 'Страница контактов',
     tplFileName: 'contact.html'
   },
 ]);

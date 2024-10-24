@@ -57,12 +57,12 @@
 
 ## API получения прайса
 
-Запрос всех слайдов
+Запрос всех данный прайса
 `GET /api/mcontent/price/public`
 возвращает объект
 ```
 {
-  fileName: имя,
+  fileName: имя файла,
   createdAt: дата создания
 }
 ```
@@ -72,6 +72,10 @@
 где {fileName} - это `fileName`
 
 
-## Получить список шаблонов
+## API шаблонов страниц
 
-`GET /api/mcontent/template/pages`
+Получить данные страницы
+`GET /api/mcontent/template/public/{alias}`
+где {alias} - это псевдоним страницы шаблона. Наприимер, `index` - это псевдоним файла `index.html`
+
+Возвращаемый объект содержит данные для header блока шаблона.
