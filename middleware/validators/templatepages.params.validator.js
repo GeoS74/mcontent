@@ -1,5 +1,5 @@
 module.exports.alias = async (ctx, next) => {
-  ctx.params.alias = `${_checkText(ctx.params.alias)}.html`;
+  ctx.params.alias = _checkText(ctx.params.alias);
   await next();
 };
 

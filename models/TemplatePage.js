@@ -12,6 +12,11 @@ const Schema = new mongoose.Schema({
     unique: 'Не уникальное значение {PATH}',
     required: 'не заполнено обязательное поле {PATH}',
   },
+  alias: {
+    type: String,
+    unique: 'Не уникальное значение {PATH}',
+    required: 'не заполнено обязательное поле {PATH}',
+  },
   title: String,
   description: String,
 }, {

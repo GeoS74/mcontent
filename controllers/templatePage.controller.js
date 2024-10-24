@@ -45,7 +45,7 @@ function _getAll() {
 }
 
 function _getTemplate(alias) {
-  return TemplatePage.findOne({ tplFileName: alias });
+  return TemplatePage.findOne({ alias });
 }
 
 function _updateTemplateTag(alias, {
@@ -53,7 +53,7 @@ function _updateTemplateTag(alias, {
   description,
 }) {
   return TemplatePage.findOneAndUpdate(
-    { tplFileName: alias },
+    { alias },
     {
       title,
       description,
