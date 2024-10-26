@@ -25,3 +25,21 @@ db.templatepages.insertMany([
     alias: 'contact'
   },
 ]);
+
+db.contacts.insertMany([
+  {
+    title: 'Адрес',
+    alias: 'address',
+    value: ''
+  },
+  {
+    title: 'Телефон',
+    alias: 'telephone',
+    value: ''
+  },
+  {
+    title: 'email',
+    alias: 'email',
+    value: ''
+  },
+]);

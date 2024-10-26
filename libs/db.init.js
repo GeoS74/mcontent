@@ -2,6 +2,7 @@ const connection = require('./connection');
 const logger = require('./logger');
 const config = require('../config');
 const TemplatePage = require('../models/TemplatePage');
+const Contact = require('../models/Contact');
 
 (async () => {
   // dropped database
@@ -12,7 +13,27 @@ const TemplatePage = require('../models/TemplatePage');
       .finally(() => process.exit());
   }
 
-  TemplatePage.insertMany([
+  await Contact.insertMany([
+    {
+      title: 'Адрес',
+      alias: 'address',
+      value: '',
+    },
+    {
+      title: 'Телефон',
+      alias: 'telephone',
+      value: '',
+    },
+    {
+      title: 'email',
+      alias: 'email',
+      value: '',
+    },
+  ])
+    .then(() => logger.info('create and init collection "contacts"'))
+    .catch((error) => logger.warn(error.message));
+
+  await TemplatePage.insertMany([
     {
       name: 'Главная страница сайта',
       tplFileName: 'index.html',
