@@ -9,6 +9,8 @@ const templatePageRoutes = require('./routes/templatePage.routes');
 const testimonialRoutes = require('./routes/testimonial.routes');
 const priceRoutes = require('./routes/price.routes');
 const contactRoutes = require('./routes/contact.routes');
+const progressRoutes = require('./routes/progress.routes');
+const solutionRoutes = require('./routes/solution.routes');
 
 const app = new Koa();
 
@@ -37,5 +39,11 @@ app.use(templatePageRoutes.routes);
 
 app.use(contactRoutes.publicRoutes);
 app.use(contactRoutes.routes);
+
+app.use(progressRoutes.publicRoutes);
+app.use(progressRoutes.routes);
+
+app.use(solutionRoutes.publicRoutes);
+app.use(solutionRoutes.routes);
 
 module.exports = app;
