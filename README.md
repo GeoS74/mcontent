@@ -84,3 +84,13 @@
 
 Получить контактные данные
 `GET /api/mcontent/contact/public`
+
+## API блока "достижения"
+
+Получить данные о достижениях
+`GET /api/mcontent/progress/public/search`
+
+## API блока "решения"
+
+Получить данные о решениях
+`GET /api/mcontent/solution/public/search`
