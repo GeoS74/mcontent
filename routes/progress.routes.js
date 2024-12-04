@@ -16,7 +16,7 @@ const optional = {
 const publicRouter = new Router({ prefix: '/api/mcontent/progress/public' });
 
 publicRouter.get(
-  '/search',
+  '/',
   validator.searchString,
   validator.lastId,
   validator.limit,

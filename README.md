@@ -25,13 +25,13 @@
 }
 ```
 
-Получить слайд
+Получить изображение слайда
 `GET /api/mcontent/static/images/slider/{fileName}`
 где {fileName} - это `fileName`
 
 ## API отзывов
 
-Запрос всех слайдов
+Запрос всех отзывов
 `GET /api/mcontent/testimonial/public`
 
 возвращает массив объектов:
@@ -94,3 +94,24 @@
 
 Получить данные о решениях
 `GET /api/mcontent/solution/public/search`
+
+## API сотрудников
+
+Запрос всех сотрудников
+`GET /api/mcontent/team/public`
+
+возвращает массив объектов:
+```
+{
+  id: идентификатор сотрудника,
+  name: имя,
+  position: должность (может быть пустой строкой),
+  isPublic: булево значение,
+  photo: {
+    originalName: исходное имя файла,
+    fileName: текущее имя файла,
+  },
+  createdAt: дата создания,
+  updatedAt: дата обновления,
+}
+```

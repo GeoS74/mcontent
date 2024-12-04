@@ -37,7 +37,7 @@ const optional = {
 const publicRouter = new Router({ prefix: '/api/mcontent/slider/public' });
 
 publicRouter.get(
-  '/search',
+  '/',
   validator.searchString,
   validator.lastId,
   validator.limit,

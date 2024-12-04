@@ -11,6 +11,7 @@ const priceRoutes = require('./routes/price.routes');
 const contactRoutes = require('./routes/contact.routes');
 const progressRoutes = require('./routes/progress.routes');
 const solutionRoutes = require('./routes/solution.routes');
+const teamRoutes = require('./routes/team.routes');
 
 const app = new Koa();
 
@@ -45,5 +46,9 @@ app.use(progressRoutes.routes);
 
 app.use(solutionRoutes.publicRoutes);
 app.use(solutionRoutes.routes);
+
+app.use(teamRoutes.publicRoutes);
+app.use(teamRoutes.routes);
+app.use(teamRoutes.static);
 
 module.exports = app;
