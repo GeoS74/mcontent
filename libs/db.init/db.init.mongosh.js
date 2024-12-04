@@ -24,6 +24,11 @@ db.templatepages.insertMany([
     tplFileName: 'contact.html',
     alias: 'contact'
   },
+  {
+    name: 'Сервис',
+    tplFileName: 'services.html',
+    alias: 'services'
+  },
 ]);
 
 db.contacts.insertMany([

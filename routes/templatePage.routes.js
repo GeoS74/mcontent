@@ -35,6 +35,8 @@ router.patch(
   '/:alias',
   koaBody({ multipart: true }),
   validator.alias,
+  validator.metaTitle,
+  validator.metaDescription,
   validator.title,
   validator.description,
   controller.update,

@@ -51,12 +51,17 @@ function _getTemplate(alias) {
 function _updateTemplateTag(alias, {
   title,
   description,
+  meta,
 }) {
   return TemplatePage.findOneAndUpdate(
     { alias },
     {
       title,
       description,
+      meta: {
+        title: meta.title,
+        description: meta.description,
+      },
     },
     {
       new: true,

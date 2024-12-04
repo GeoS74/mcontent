@@ -59,6 +59,11 @@ const Contact = require('../models/Contact');
       tplFileName: 'contact.html',
       alias: 'contact',
     },
+    {
+      name: 'Сервис',
+      tplFileName: 'services.html',
+      alias: 'services',
+    },
   ])
     .then(() => logger.info('create and init collection "templatepages"'))
     .catch((error) => logger.warn(error.message))

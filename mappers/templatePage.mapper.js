@@ -4,4 +4,8 @@ module.exports = (data) => ({
   alias: data.alias,
   title: data.title || '',
   description: data.description || '',
+  meta: {
+    title: data.meta.title || '',
+    description: data.meta.description || '',
+  },
 });
