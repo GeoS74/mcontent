@@ -81,7 +81,7 @@ module.exports.lastId = async (ctx, next) => {
 };
 
 module.exports.limit = async (ctx, next) => {
-  const defaultLimit = 5;
+  const defaultLimit = 25;
 
   ctx.query.limit = parseInt(ctx.query.limit, 10) || defaultLimit;
   if (ctx.query.limit > 25) {
