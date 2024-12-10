@@ -11,6 +11,10 @@ module.exports.getAll = async (ctx) => {
 module.exports.get = async (ctx) => {
   const level = await _getLevel(ctx.params.id);
 
+  if (!level) {
+    ctx.throw(404, 'level not found');
+  }
+
   ctx.status = 200;
   ctx.body = mapper(level);
 };
@@ -24,6 +28,10 @@ module.exports.add = async (ctx) => {
 
 module.exports.update = async (ctx) => {
   const level = await _updateLevel(ctx.params.id, ctx.request.body);
+
+  if (!level) {
+    ctx.throw(404, 'level not found');
+  }
 
   ctx.status = 200;
   ctx.body = mapper(level);
@@ -77,11 +85,7 @@ function _updateLevel(id, {
 }
 
 function _getLevel(id) {
-  return CatalogLevel.findById(id)
-    .populate({
-      path: 'childs',
-      populate: { path: 'childs' },
-    });
+  return CatalogLevel.findById(id);
 }
 
 function _getLevels() {
@@ -89,11 +93,7 @@ function _getLevels() {
     $or: [
       { parent: { $exists: false } },
       { parent: null }],
-  })
-    .populate({
-      path: 'childs',
-      populate: { path: 'childs' },
-    });
+  });
 }
 
 function _addLevel({

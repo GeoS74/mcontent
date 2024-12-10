@@ -2,7 +2,13 @@ const { isValidObjectId } = require('mongoose');
 const CatalogLevel = require('../../models/CatalogLevel');
 
 module.exports.title = async (ctx, next) => {
-  ctx.request.body.title = _checkText(ctx.request?.body?.title) || undefined;
+  const title = _checkText(ctx.request?.body?.title);
+
+  if (!title) {
+    ctx.throw(400, 'title is empty');
+  }
+
+  ctx.request.body.title = title;
 
   await next();
 };
@@ -13,9 +19,14 @@ module.exports.parent = async (ctx, next) => {
       ctx.throw(400, 'invalid parent id of catalog level');
     }
 
+    // не может быть подчинён сам себе
+    if (ctx.params.id && ctx.params.id === ctx.request.body.parent) {
+      ctx.throw(400, 'cannot be subordinated to oneself');
+    }
+
     const parent = await _checkLevelById(ctx.request.body.parent);
     if (!parent) {
-      ctx.throw(400, 'parent nor exists');
+      ctx.throw(400, 'parent not exists');
     }
   }
 

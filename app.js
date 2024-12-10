@@ -13,7 +13,7 @@ const progressRoutes = require('./routes/progress.routes');
 const solutionRoutes = require('./routes/solution.routes');
 const teamRoutes = require('./routes/team.routes');
 const noteRoutes = require('./routes/note.routes');
-const catalogRoutes = require('./routes/catalog.routes');
+const levelCatalogRoutes = require('./routes/level.catalog.routes');
 
 const app = new Koa();
 
@@ -57,6 +57,6 @@ app.use(noteRoutes.publicRoutes);
 app.use(noteRoutes.routes);
 app.use(noteRoutes.static);
 
-app.use(catalogRoutes.routes);
+app.use(levelCatalogRoutes.routes);
 
 module.exports = app;

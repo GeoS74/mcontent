@@ -22,4 +22,20 @@ Schema.virtual('childs', {
   foreignField: 'parent',
 });
 
+Schema.pre('find', function f() {
+  this.populate('childs');
+});
+
+Schema.pre('findOne', function f() {
+  this.populate('childs');
+});
+
+Schema.pre('findOneAndUpdate', function f() {
+  this.populate('childs');
+});
+
+Schema.pre('findOneAndDelete', function f() {
+  this.populate('childs');
+});
+
 module.exports = connection.model('CatalogLevel', Schema);
