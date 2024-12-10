@@ -20,14 +20,4 @@ const Schema = new mongoose.Schema({
   timestamps: true,
 });
 
-Schema.index(
-  {
-    title: 'text',
-  },
-  {
-    name: 'ProgressSearchIndex',
-    default_language: 'russian',
-  },
-);
-
 module.exports = connection.model('Progress', Schema);

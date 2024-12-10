@@ -154,7 +154,6 @@ function _deleteFiles(files) {
 //  * поиск записи
 //  *
 //  * возможные параметры запроса:
-//  * - search
 //  * - last
 //  * - limit
 //  * - isPublic
@@ -173,28 +172,17 @@ async function _searchTeamUnits(data) {
   return Team.find(data.filter, data.projection)
     .sort({
       _id: -1,
-      //  score: { $meta: "textScore" } //сортировка по релевантности
     })
     .limit(data.limit);
 }
 
 function _makeFilterRules({
-  search,
   lastId,
   limit,
   isPublic,
 }) {
   const filter = {};
   const projection = {};
-
-  if (search) {
-    filter.$text = {
-      $search: search,
-      $language: 'russian',
-    };
-
-    projection.score = { $meta: 'textScore' }; // добавить в данные оценку текстового поиска (релевантность)
-  }
 
   if (lastId) {
     filter._id = { $lt: lastId };

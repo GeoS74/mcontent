@@ -14,6 +14,7 @@ const solutionRoutes = require('./routes/solution.routes');
 const teamRoutes = require('./routes/team.routes');
 const noteRoutes = require('./routes/note.routes');
 const levelCatalogRoutes = require('./routes/level.catalog.routes');
+const positionCatalogRoutes = require('./routes/position.catalog.routes');
 
 const app = new Koa();
 
@@ -59,5 +60,9 @@ app.use(noteRoutes.static);
 
 app.use(levelCatalogRoutes.publicRoutes);
 app.use(levelCatalogRoutes.routes);
+
+app.use(positionCatalogRoutes.publicRoutes);
+app.use(positionCatalogRoutes.routes);
+app.use(positionCatalogRoutes.static);
 
 module.exports = app;

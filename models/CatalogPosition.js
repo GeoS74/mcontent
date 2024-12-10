@@ -27,9 +27,10 @@ const Schema = new mongoose.Schema({
 Schema.index(
   {
     title: 'text',
+    article: 'text',
   },
   {
-    name: 'PositionSearchIndex',
+    name: 'CatalogPositionSearchIndex',
     default_language: 'russian',
   },
 );

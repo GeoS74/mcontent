@@ -18,14 +18,4 @@ const Schema = new mongoose.Schema({
   timestamps: true,
 });
 
-Schema.index(
-  {
-    title: 'text',
-  },
-  {
-    name: 'TeamSearchIndex',
-    default_language: 'russian',
-  },
-);
-
 module.exports = connection.model('Team', Schema);

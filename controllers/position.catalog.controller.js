@@ -1,122 +1,124 @@
 const fs = require('fs/promises');
 const sharp = require('sharp');
 const path = require('path');
-const Slide = require('../models/Slide');
-const mapper = require('../mappers/slider.mapper');
+const CatalogPosition = require('../models/CatalogPosition');
+const mapper = require('../mappers/catalog.position.mapper');
 const logger = require('../libs/logger');
 
 module.exports.get = async (ctx) => {
-  const slide = await _getSlide(ctx.params.id);
+  const position = await _getPosition(ctx.params.id);
 
-  if (!slide) {
-    ctx.throw(404, 'slide not found');
+  if (!position) {
+    ctx.throw(404, 'position not found');
   }
   ctx.status = 200;
-  ctx.body = mapper(slide);
+  ctx.body = mapper(position);
 };
 
 module.exports.add = async (ctx) => {
   ctx.request.body.image = await _processingImage(ctx.request.files.image);
 
-  const slide = await _addSlide(ctx.request.body);
+  const position = await _addPosition(ctx.request.body);
 
   ctx.status = 201;
-  ctx.body = mapper(slide);
+  ctx.body = mapper(position);
 };
 
 module.exports.update = async (ctx) => {
   ctx.request.body.image = ctx.request?.files?.image
     ? await _processingImage(ctx.request.files.image) : undefined;
 
-  let slide = await _getSlide(ctx.params.id);
+  let position = await _getPosition(ctx.params.id);
 
-  if (!slide) {
+  if (!position) {
     if (ctx.request.files) {
       // убрать временные файлы
       _deleteFiles(ctx.request.files);
     }
-    ctx.throw(404, 'slide not found');
+    ctx.throw(404, 'position not found');
   }
 
   // убрать старый файл
   if (ctx.request.body.image) {
-    _deleteFile(path.join(__dirname, `../files/images/slider/${slide.image.fileName}`));
+    _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
   }
 
-  slide = await _updateSlide(ctx.params.id, ctx.request.body);
+  position = await _updatePosition(ctx.params.id, ctx.request.body);
 
   ctx.status = 200;
-  ctx.body = mapper(slide);
+  ctx.body = mapper(position);
 };
 
 module.exports.delete = async (ctx) => {
-  const slide = await _deleteSlide(ctx.params.id);
+  const position = await _deletePosition(ctx.params.id);
 
-  if (!slide) {
-    ctx.throw(404, 'slide not found');
+  if (!position) {
+    ctx.throw(404, 'position not found');
   }
 
   /* delete images */
-  if (slide.image) {
-    _deleteFile(path.join(__dirname, `../files/images/slider/${slide.image.fileName}`));
+  if (position.image) {
+    _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
   }
 
   ctx.status = 200;
-  ctx.body = mapper(slide);
+  ctx.body = mapper(position);
 };
 
-function _getSlide(id) {
-  return Slide.findById(id);
+function _getPosition(id) {
+  return CatalogPosition.findById(id)
+    .populate({ path: 'level' });
 }
 
-function _addSlide({
+function _addPosition({
   title,
-  message,
+  article,
   isPublic,
   image,
+  level,
 }) {
-  return Slide.create({
+  return CatalogPosition.create({
     title,
-    message,
+    article,
     isPublic: !!isPublic,
     image,
-  });
+    level,
+  }).then((p) => p.populate({ path: 'level' }));
 }
 
-function _updateSlide(id, {
+function _updatePosition(id, {
   title,
-  message,
+  article,
   isPublic,
   image,
+  level,
 }) {
-  return Slide.findByIdAndUpdate(
+  return CatalogPosition.findByIdAndUpdate(
     id,
     {
       title,
-      message,
-      isPublic: !!isPublic,
+      article,
+      isPublic,
       image,
+      level,
     },
     {
       new: true,
     },
-  );
+  )
+    .populate({ path: 'level' });
 }
 
-function _deleteSlide(id) {
-  return Slide.findByIdAndDelete(id);
+function _deletePosition(id) {
+  return CatalogPosition.findByIdAndDelete(id)
+    .populate({ path: 'level' });
 }
 
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/slider/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/catalog/${image.newFilename}`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
   _deleteFile(image.filepath);
-
-  // перемещение файла без обработки
-  // await fs.rename(image.filepath,
-  //  path.join(__dirname, `../files/images/slider/${image.newFilename}`))
-  //   .catch((error) => logger.error(error.mesasge));
 
   return {
     originalName: image.originalFilename,
@@ -127,7 +129,7 @@ async function _processingImage(image) {
 async function _resizePhoto(filepath, newFilename) {
   return sharp(filepath)
     .resize({
-      width: 1900,
+      width: 1000,
       // height: 350,
     })
     .toFile(newFilename);
@@ -159,6 +161,7 @@ function _deleteFiles(files) {
 //  * поиск записи
 //  *
 //  * возможные параметры запроса:
+//  * - search
 //  * - last
 //  * - limit
 //  * - isPublic
@@ -167,27 +170,39 @@ function _deleteFiles(files) {
 
 module.exports.search = async (ctx) => {
   const data = _makeFilterRules(ctx.query);
-  const slides = await _searchSide(data);
+  const positions = await _searchSide(data);
 
-  ctx.body = slides.map((slide) => (mapper(slide)));
+  ctx.body = positions.map((pos) => (mapper(pos)));
   ctx.status = 200;
 };
 
 async function _searchSide(data) {
-  return Slide.find(data.filter, data.projection)
+  return CatalogPosition.find(data.filter, data.projection)
     .sort({
       _id: -1,
+      //  score: { $meta: "textScore" } //сортировка по релевантности
     })
-    .limit(data.limit);
+    .limit(data.limit)
+    .populate({ path: 'level' });
 }
 
 function _makeFilterRules({
+  search,
   lastId,
   limit,
   isPublic,
 }) {
   const filter = {};
   const projection = {};
+
+  if (search) {
+    filter.$text = {
+      $search: search,
+      $language: 'russian',
+    };
+
+    projection.score = { $meta: 'textScore' }; // добавить в данные оценку текстового поиска (релевантность)
+  }
 
   if (lastId) {
     filter._id = { $lt: lastId };
