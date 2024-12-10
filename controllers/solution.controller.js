@@ -22,6 +22,10 @@ module.exports.add = async (ctx) => {
 module.exports.update = async (ctx) => {
   const solution = await _update(ctx.params.id, ctx.request.body);
 
+  if (!solution) {
+    ctx.throw(404, 'solution not found');
+  }
+
   ctx.status = 200;
   ctx.body = mapper(solution);
 };

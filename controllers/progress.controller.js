@@ -21,6 +21,10 @@ module.exports.add = async (ctx) => {
 module.exports.update = async (ctx) => {
   const progress = await _update(ctx.params.id, ctx.request.body);
 
+  if (!progress) {
+    ctx.throw(404, 'progress not found');
+  }
+
   ctx.status = 200;
   ctx.body = mapper(progress);
 };
