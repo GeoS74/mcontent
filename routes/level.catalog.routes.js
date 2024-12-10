@@ -19,6 +19,18 @@ const optional = {
 };
 
 /*
+* роут без проверки access токена
+*/
+const publicRouter = new Router({ prefix: '/api/mcontent/catalog/level/public' });
+
+publicRouter.get(
+  '/',
+  controller.getAll,
+);
+
+module.exports.publicRoutes = publicRouter.routes();
+
+/*
 * все роуты доступны только при наличии access токена
 * CRUD операции выполняются по email-у, передаваемом в access токене
 * если проверка access токена выключена, срабатывает валидатор email
@@ -26,11 +38,6 @@ const optional = {
 const router = new Router({ prefix: '/api/mcontent/catalog/level' });
 
 router.use(accessCheck, emailCheck);
-
-router.get(
-  '/',
-  controller.getAll,
-);
 
 router.get(
   '/:id',

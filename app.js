@@ -57,6 +57,7 @@ app.use(noteRoutes.publicRoutes);
 app.use(noteRoutes.routes);
 app.use(noteRoutes.static);
 
+app.use(levelCatalogRoutes.publicRoutes);
 app.use(levelCatalogRoutes.routes);
 
 module.exports = app;
