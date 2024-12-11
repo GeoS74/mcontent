@@ -1,8 +1,8 @@
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
 
-const controller = require('../controllers/level.catalog.controller');
-const validator = require('../middleware/validators/level.catalog.params.validator');
+const controller = require('../controllers/catalog.level.controller');
+const validator = require('../middleware/validators/catalog.level.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 

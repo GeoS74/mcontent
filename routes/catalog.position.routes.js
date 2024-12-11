@@ -4,8 +4,8 @@ const { koaBody } = require('koa-body');
 const serve = require('koa-static');
 const mount = require('koa-mount');
 
-const controller = require('../controllers/position.catalog.controller');
-const validator = require('../middleware/validators/position.catalog.params.validator');
+const controller = require('../controllers/catalog.position.controller');
+const validator = require('../middleware/validators/catalog.position.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 

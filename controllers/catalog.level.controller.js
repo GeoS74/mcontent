@@ -1,4 +1,5 @@
 const CatalogLevel = require('../models/CatalogLevel');
+const CatalogPosition = require('../models/CatalogPosition');
 const mapper = require('../mappers/catalog.level.mapper');
 
 module.exports.getAll = async (ctx) => {
@@ -44,10 +45,11 @@ module.exports.delete = async (ctx) => {
     ctx.throw(404, 'level not found');
   }
 
-  /*
-  *здесь надо написать проверку на привязанные позиции каталога
-  *
-  */
+  // проверка на привязанные позиции каталога
+  const relatedPosition = await _getRelatedPosition(level.id);
+  if (relatedPosition) {
+    ctx.throw(400, 'level has associated positions');
+  }
 
   // если есть вложенные уровни, то вынести их на уровень выше
   if (level?.childs?.length) {
@@ -63,6 +65,10 @@ module.exports.delete = async (ctx) => {
   ctx.status = 200;
   ctx.body = mapper(level);
 };
+
+function _getRelatedPosition(levelId) {
+  return CatalogPosition.findOne({ level: levelId });
+}
 
 function _deleteLevel(id) {
   return CatalogLevel.findByIdAndDelete(id);
