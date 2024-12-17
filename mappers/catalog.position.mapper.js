@@ -1,7 +1,7 @@
 module.exports = (data) => ({
   id: data.id,
   title: data.title,
-  article: data.message || '',
+  article: data.article || '',
   isPublic: data.isPublic,
   image: {
     originalName: data.image.originalName,
