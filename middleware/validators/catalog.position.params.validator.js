@@ -69,6 +69,16 @@ module.exports.searchString = async (ctx, next) => {
   await next();
 };
 
+module.exports.filterLevel = async (ctx, next) => {
+  if (ctx.query.level) {
+    if (!isValidObjectId(ctx.query.level)) {
+      ctx.throw(400, 'invalid level id');
+    }
+  }
+
+  await next();
+};
+
 module.exports.lastId = async (ctx, next) => {
   if (ctx.query.last) {
     if (!isValidObjectId(ctx.query.last)) {

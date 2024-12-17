@@ -41,6 +41,7 @@ publicRouter.get(
   validator.searchString,
   validator.lastId,
   validator.limit,
+  validator.filterLevel,
   validator.isPublic,
 
   controller.search,

@@ -188,6 +188,7 @@ async function _searchSide(data) {
 
 function _makeFilterRules({
   search,
+  level,
   lastId,
   limit,
   isPublic,
@@ -202,6 +203,10 @@ function _makeFilterRules({
     };
 
     projection.score = { $meta: 'textScore' }; // добавить в данные оценку текстового поиска (релевантность)
+  }
+
+  if (level) {
+    filter.level = level;
   }
 
   if (lastId) {
