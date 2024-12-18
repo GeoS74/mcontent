@@ -73,6 +73,7 @@ function _getPosition(id) {
 function _addPosition({
   title,
   article,
+  description,
   isPublic,
   image,
   level,
@@ -80,6 +81,7 @@ function _addPosition({
   return CatalogPosition.create({
     title,
     article,
+    description,
     isPublic: !!isPublic,
     image,
     level,
@@ -89,6 +91,7 @@ function _addPosition({
 function _updatePosition(id, {
   title,
   article,
+  description,
   isPublic,
   image,
   level,
@@ -98,6 +101,7 @@ function _updatePosition(id, {
     {
       title,
       article,
+      description,
       isPublic,
       image,
       level,

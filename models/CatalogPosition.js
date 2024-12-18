@@ -15,6 +15,9 @@ const Schema = new mongoose.Schema({
   article: {
     type: String,
   },
+  description: {
+    type: String,
+  },
   image: { originalName: String, fileName: String },
   isPublic: {
     type: Boolean,

@@ -155,6 +155,11 @@ module.exports.level = async (ctx, next) => {
   await next();
 };
 
+module.exports.description = async (ctx, next) => {
+  ctx.request.body.description = _checkText(ctx.request?.body?.description) || '';
+  await next();
+};
+
 function _checkLevelById(id) {
   return CatalogLevel.findById(id);
 }

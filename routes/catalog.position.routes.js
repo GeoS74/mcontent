@@ -71,6 +71,7 @@ router.post(
   validator.level,
   validator.title,
   validator.article,
+  validator.description,
   validator.isPublic,
   controller.add,
 );
@@ -82,6 +83,7 @@ router.patch(
   validator.image,
   validator.title,
   validator.article,
+  validator.description,
   validator.isPublic,
   controller.update,
 );
