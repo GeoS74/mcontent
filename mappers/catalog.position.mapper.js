@@ -1,5 +1,6 @@
 module.exports = (data) => ({
   id: data.id,
+  alias: data.alias,
   title: data.title,
   article: data.article || '',
   description: data.description || '',

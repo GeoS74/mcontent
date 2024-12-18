@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const connection = require('../libs/connection');
 const CatalogLevel = require('./CatalogLevel');
+const aliaser = require('../libs/aliaser');
 
 const Schema = new mongoose.Schema({
   level: {
@@ -23,6 +24,7 @@ const Schema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  alias: String,
 }, {
   timestamps: true,
 });
@@ -37,5 +39,15 @@ Schema.index(
     default_language: 'russian',
   },
 );
+
+Schema.pre('save', function s() {
+  this.alias = aliaser(`${this.article}_${this.title}`);
+});
+
+Schema.pre('findOneAndUpdate', function u() {
+  const update = this.getUpdate();
+  const alias = aliaser(`${update.article}_${update.title}`);
+  this.setUpdate({ ...update, alias });
+});
 
 module.exports = connection.model('CatalogPosition', Schema);

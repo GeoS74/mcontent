@@ -151,6 +151,7 @@
   id: идентификатор позиции,
   title: наименование,
   article: артикул,
+  description: описание,
   isPublic: булево значение,
   image: {
     originalName: исходное имя файла,
