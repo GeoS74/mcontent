@@ -19,14 +19,10 @@ module.exports.parent = async (ctx, next) => {
       ctx.throw(400, 'invalid parent id of catalog level');
     }
 
-    // не может быть подчинён сам себе
-    if (ctx.params.id && ctx.params.id === ctx.request.body.parent) {
-      ctx.throw(400, 'cannot be subordinated to oneself');
-    }
-
-    const parent = await _checkLevelById(ctx.request.body.parent);
-    if (!parent) {
-      ctx.throw(400, 'parent not exists');
+    try {
+      await _checkParent(ctx.params.id, ctx.request.body.parent);
+    } catch (e) {
+      ctx.throw(400, e.message);
     }
   }
 
@@ -34,15 +30,34 @@ module.exports.parent = async (ctx, next) => {
 };
 
 module.exports.objectId = async (ctx, next) => {
-  if (!isValidObjectId(ctx.params.id)) {
+  if (!ctx.params.id || !isValidObjectId(ctx.params.id)) {
     ctx.throw(400, 'invalid catalog level id');
   }
 
   await next();
 };
 
-function _checkLevelById(id) {
-  return CatalogLevel.findById(id);
+/*
+функция рекурсивно поднимается по дереву вверх используя id родителя
+выбросит ошибку если:
+1) родителя по id не существует
+2) попытка подчинить раздел самому себе
+3) попытка подчинить раздел своему потомку
+*/
+async function _checkParent(id, parentId) {
+  const parent = await CatalogLevel.findById(parentId);
+
+  if (!parent) {
+    throw new Error('parent not exists');
+  }
+
+  if (parent.id === id) {
+    throw new Error('cannot be subordinated to oneself or nested level');
+  }
+
+  if (parent.parent) {
+    await _checkParent(id, parent.parent);
+  }
 }
 
 function _checkText(text) {
