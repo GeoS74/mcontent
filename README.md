@@ -116,9 +116,13 @@
 }
 ```
 
+Получить изображение слайда
+`GET /api/mcontent/static/images/team/{fileName}`
+где {fileName} - это `fileName`
+
 ## API каталога
 
-Запрос уровней каталога
+##### Запрос уровней каталога
 `GET /api/mcontent/catalog/level/public`
 
 возвращает массив объектов:
@@ -127,6 +131,10 @@
   id: идентификатор уровня,
   title: название,
   parent: null, id родительского уровня,
+  image: {
+    originalName: исходное имя файла,
+    fileName: текущее имя файла,
+  },
   createdAt: дата создания,
   updatedAt: дата обновления,
   childs: [ массив потомков
@@ -134,6 +142,10 @@
       id: идентификатор уровня,
       title: название,
       parent: null, id родительского уровня,
+      image: {
+        originalName: исходное имя файла,
+        fileName: текущее имя файла,
+      },
       createdAt: дата создания,
       updatedAt: дата обновления,
       childs: [] массив потомков, 
@@ -142,7 +154,7 @@
 }
 ```
 
-Запрос позиций каталога
+##### Запрос позиций каталога
 `GET /api/mcontent/catalog/position/public`
 
 возвращает массив объектов:
@@ -153,6 +165,7 @@
   article: артикул,
   description: описание,
   isPublic: булево значение,
+  alias: псевдоним (для формирования ссылки),
   image: {
     originalName: исходное имя файла,
     fileName: текущее имя файла,
@@ -165,3 +178,7 @@
   updatedAt: дата обновления,
 }
 ```
+
+##### Получить изображение раздела или позиции
+`GET /api/mcontent/static/images/catalog/{fileName}`
+где {fileName} - это `fileName`

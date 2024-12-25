@@ -1,3 +1,4 @@
+const { readdir, mkdir } = require('node:fs/promises');
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
 
@@ -5,6 +6,16 @@ const controller = require('../controllers/catalog.level.controller');
 const validator = require('../middleware/validators/catalog.level.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+
+(async () => {
+  try {
+    await readdir('./files/images/catalog');
+  } catch (error) {
+    mkdir('./files/images/catalog', {
+      recursive: true,
+    });
+  }
+})();
 
 const optional = {
   formidable: {
@@ -48,6 +59,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
+  validator.imageIsNotNull,
   validator.title,
   validator.parent,
   controller.add,
@@ -57,6 +69,7 @@ router.patch(
   '/:id',
   koaBody(optional),
   validator.objectId,
+  validator.image,
   validator.title,
   validator.parent,
   controller.update,

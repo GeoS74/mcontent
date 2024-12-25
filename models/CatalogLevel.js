@@ -10,6 +10,7 @@ const Schema = new mongoose.Schema({
     type: String,
     required: 'не заполнено обязательное поле {PATH}',
   },
+  image: { originalName: String, fileName: String },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
