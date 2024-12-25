@@ -135,7 +135,7 @@ async function _resizePhoto(filepath, newFilename) {
     .resize({
       width: 1000,
       height: 1000,
-      fit: 'contain',
+      fit: 'cover',
     })
     .toFile(newFilename);
 }
