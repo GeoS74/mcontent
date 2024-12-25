@@ -57,7 +57,7 @@ module.exports.delete = async (ctx) => {
   }
 
   /* delete images */
-  if (position.image) {
+  if (position.image?.fileName) {
     _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
   }
 

@@ -25,7 +25,10 @@ module.exports.get = async (ctx) => {
 };
 
 module.exports.add = async (ctx) => {
-  ctx.request.body.image = await _processingImage(ctx.request.files.image);
+  // ctx.request.body.image = await _processingImage(ctx.request.files.image);
+
+  ctx.request.body.image = ctx.request?.files?.image
+    ? await _processingImage(ctx.request.files.image) : undefined;
 
   const level = await _addLevel(ctx.request.body);
 
@@ -48,7 +51,7 @@ module.exports.update = async (ctx) => {
   }
 
   // убрать старый файл
-  if (ctx.request.body.image) {
+  if (ctx.request.body.image && level.image?.fileName) {
     _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
   }
 
@@ -80,11 +83,47 @@ module.exports.delete = async (ctx) => {
     });
   }
 
+  /* delete images */
+  if (level.image?.fileName) {
+    _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+  }
+
   await _deleteLevel(ctx.params.id);
 
   ctx.status = 200;
   ctx.body = mapper(level);
 };
+
+module.exports.deleteImage = async (ctx) => {
+  let level = await _getLevel(ctx.params.id);
+
+  if (!level) {
+    ctx.throw(404, 'level not found');
+  }
+
+  if (!level?.image?.fileName) {
+    ctx.throw(404, 'image is empty');
+  }
+
+  _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+
+  level = await _delImage(ctx.params.id);
+
+  ctx.status = 200;
+  ctx.body = mapper(level);
+};
+
+function _delImage(id) {
+  return CatalogLevel.findByIdAndUpdate(
+    id,
+    {
+      $unset: { image: '' },
+    },
+    {
+      new: true,
+    },
+  );
+}
 
 function _getRelatedPosition(levelId) {
   return CatalogPosition.findOne({ level: levelId });

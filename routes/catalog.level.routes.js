@@ -59,7 +59,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
-  validator.imageIsNotNull,
+  validator.image, // imageIsNotNull
   validator.title,
   validator.parent,
   controller.add,
@@ -76,9 +76,15 @@ router.patch(
 );
 
 router.delete(
-  '/:id',
+  '/level/:id',
   validator.objectId,
   controller.delete,
+);
+
+router.delete(
+  '/image/:id',
+  validator.objectId,
+  controller.deleteImage,
 );
 
 module.exports.routes = router.routes();
