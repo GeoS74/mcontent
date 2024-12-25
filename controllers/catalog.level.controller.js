@@ -50,9 +50,17 @@ module.exports.update = async (ctx) => {
     ctx.throw(404, 'level not found');
   }
 
-  // убрать старый файл
-  if (ctx.request.body.image && level.image?.fileName) {
-    _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+  // есть прикреплённое изображение
+  if (level.image?.fileName) {
+    // если загружается новый файл, то удалить старый файл
+    // если новый файл не загружается, проверить существование поля delCurrentImage
+    // если оно есть, то удалить существующий файл и удалить запись о нём в БД
+    if (ctx.request.body.image) {
+      _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+    } else if (ctx.request.body.delCurrentImage) {
+      _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+      await _unsetImage(ctx.params.id);
+    }
   }
 
   level = await _updateLevel(ctx.params.id, ctx.request.body);
@@ -94,34 +102,10 @@ module.exports.delete = async (ctx) => {
   ctx.body = mapper(level);
 };
 
-module.exports.deleteImage = async (ctx) => {
-  let level = await _getLevel(ctx.params.id);
-
-  if (!level) {
-    ctx.throw(404, 'level not found');
-  }
-
-  if (!level?.image?.fileName) {
-    ctx.throw(404, 'image is empty');
-  }
-
-  _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
-
-  level = await _delImage(ctx.params.id);
-
-  ctx.status = 200;
-  ctx.body = mapper(level);
-};
-
-function _delImage(id) {
+function _unsetImage(id) {
   return CatalogLevel.findByIdAndUpdate(
     id,
-    {
-      $unset: { image: '' },
-    },
-    {
-      new: true,
-    },
+    { $unset: { image: '' } },
   );
 }
 

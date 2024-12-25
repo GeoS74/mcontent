@@ -76,15 +76,9 @@ router.patch(
 );
 
 router.delete(
-  '/level/:id',
+  '/:id',
   validator.objectId,
   controller.delete,
-);
-
-router.delete(
-  '/image/:id',
-  validator.objectId,
-  controller.deleteImage,
 );
 
 module.exports.routes = router.routes();
