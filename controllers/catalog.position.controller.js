@@ -133,8 +133,8 @@ async function _processingImage(image) {
 async function _resizePhoto(filepath, newFilename) {
   return sharp(filepath)
     .resize({
-      width: 1000,
-      height: 1000,
+      width: 400,
+      height: 400,
       fit: 'cover',
     })
     .toFile(newFilename);
