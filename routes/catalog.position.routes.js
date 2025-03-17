@@ -11,9 +11,9 @@ const emailCheck = require('../middleware/email.check');
 
 (async () => {
   try {
-    await readdir('./files/images/catalog');
+    await readdir('./files/images/catalog/pdf');
   } catch (error) {
-    mkdir('./files/images/catalog', {
+    mkdir('./files/images/catalog/pdf', {
       recursive: true,
     });
   }
@@ -67,7 +67,8 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
-  validator.imageIsNotNull,
+  validator.pdf,
+  validator.image,
   validator.level,
   validator.title,
   validator.article,
@@ -80,6 +81,7 @@ router.patch(
   koaBody(optional),
   validator.objectId,
   validator.level,
+  validator.pdf,
   validator.image,
   validator.title,
   validator.article,
@@ -97,3 +99,4 @@ module.exports.routes = router.routes();
 
 // static files
 module.exports.static = mount('/api/mcontent/static/images/catalog', serve('./files/images/catalog'));
+module.exports.static = mount('/api/mcontent/static/pdf/catalog', serve('./files/images/catalog/pdf'));

@@ -9,6 +9,10 @@ module.exports = (data) => ({
     originalName: data.image.originalName,
     fileName: data.image.fileName,
   },
+  pdf: {
+    originalName: data.pdf.originalName,
+    fileName: data.pdf.fileName,
+  },
   level: {
     id: data.level.id,
     title: data.level.title,

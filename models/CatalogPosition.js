@@ -20,6 +20,7 @@ const Schema = new mongoose.Schema({
     type: String,
   },
   image: { originalName: String, fileName: String },
+  pdf: { originalName: String, fileName: String },
   isPublic: {
     type: Boolean,
     default: false,

@@ -31,6 +31,38 @@ module.exports.imageIsNotNull = async (ctx, next) => {
   await next();
 };
 
+module.exports.pdf = async (ctx, next) => {
+  if (!ctx.request?.files) {
+    ctx.request.files = undefined;
+    await next();
+    return;
+  }
+
+  // if (Object.keys(ctx.request.files).length > 1) {
+  //   _deleteFile(ctx.request.files);
+  //   ctx.throw(400, 'more than one file received');
+  // }
+
+  if (Object.keys(ctx.request.files).indexOf('image') === -1) {
+    _deleteFile(ctx.request.files);
+    ctx.request.files = undefined;
+    await next();
+    return;
+  }
+
+  if (Array.isArray(ctx.request.files.image)) {
+    _deleteFile(ctx.request.files);
+    ctx.throw(400, 'more than 1 file received by field "image"');
+  }
+
+  if (!_checkMimeType(ctx.request.files.image.mimetype)) {
+    _deleteFile(ctx.request.files);
+    ctx.throw(400, 'bad image mime type');
+  }
+
+  await next();
+};
+
 module.exports.image = async (ctx, next) => {
   if (!ctx.request?.files) {
     ctx.request.files = undefined;
@@ -38,10 +70,10 @@ module.exports.image = async (ctx, next) => {
     return;
   }
 
-  if (Object.keys(ctx.request.files).length > 1) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'more than one file received');
-  }
+  // if (Object.keys(ctx.request.files).length > 1) {
+  //   _deleteFile(ctx.request.files);
+  //   ctx.throw(400, 'more than one file received');
+  // }
 
   if (Object.keys(ctx.request.files).indexOf('image') === -1) {
     _deleteFile(ctx.request.files);

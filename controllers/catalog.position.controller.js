@@ -16,7 +16,9 @@ module.exports.get = async (ctx) => {
 };
 
 module.exports.add = async (ctx) => {
-  ctx.request.body.image = await _processingImage(ctx.request.files.image);
+
+  ctx.request.body.image = ctx.request?.files?.image
+    ? await _processingImage(ctx.request.files.image) : undefined;
 
   const position = await _addPosition(ctx.request.body);
 
@@ -38,10 +40,18 @@ module.exports.update = async (ctx) => {
     ctx.throw(404, 'position not found');
   }
 
-  // убрать старый файл
-  if (ctx.request.body.image) {
-    _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
-  }
+  // есть прикреплённое изображение
+    if (position.image?.fileName) {
+      // если загружается новый файл, то удалить старый файл
+      // если новый файл не загружается, проверить существование поля delCurrentImage
+      // если оно есть, то удалить существующий файл и удалить запись о нём в БД
+      if (ctx.request.body.image) {
+        _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
+      } else if (ctx.request.body.delCurrentImage) {
+        _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
+        await _unsetImage(ctx.params.id);
+      }
+    }
 
   position = await _updatePosition(ctx.params.id, ctx.request.body);
 
@@ -116,6 +126,13 @@ function _updatePosition(id, {
 function _deletePosition(id) {
   return CatalogPosition.findByIdAndDelete(id)
     .populate({ path: 'level' });
+}
+
+function _unsetImage(id) {
+  return CatalogPosition.findByIdAndUpdate(
+    id,
+    { $unset: { image: '' } },
+  );
 }
 
 async function _processingImage(image) {
