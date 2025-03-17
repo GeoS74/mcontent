@@ -23,6 +23,10 @@ module.exports = {
   log: {
     file: 'app.log',
   },
+  tempFiles: {
+    dir: './files',
+    maxms: 1000 * 60 * 10,
+  },
   koaBodyOptional: {
     formidable: {
       uploadDir: './files',

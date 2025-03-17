@@ -50,8 +50,8 @@ module.exports.image = async (ctx, next) => {
   // }
 
   // if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    // _deleteFile(ctx.request.files);
-    // ctx.request.files = undefined;
+  // _deleteFile(ctx.request.files);
+  // ctx.request.files = undefined;
   //   await next();
   //   return;
   // }
