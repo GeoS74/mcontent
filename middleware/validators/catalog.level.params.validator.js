@@ -3,18 +3,8 @@ const CatalogLevel = require('../../models/CatalogLevel');
 const { isImage } = require('../../libs/checkMimeType');
 
 module.exports.image = async (ctx, next) => {
-  if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
-    ctx.request.files = undefined;
-    await next();
-    return;
-  }
-
-  if (Object.keys(ctx.request.files).length > 1) {
-    ctx.throw(400, 'more than one file received');
-  }
-
-  if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    ctx.request.files = undefined;
+  if (!ctx.request?.files?.image) {
+    ctx.request.body.image = undefined;
     await next();
     return;
   }
@@ -27,17 +17,43 @@ module.exports.image = async (ctx, next) => {
     ctx.throw(400, 'bad image mime type');
   }
 
+  ctx.request.body.image = ctx.request.files.image;
+
   await next();
+
+  // if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
+  //   ctx.request.files = undefined;
+  //   await next();
+  //   return;
+  // }
+
+  // if (Object.keys(ctx.request.files).length > 1) {
+  //   ctx.throw(400, 'more than one file received');
+  // }
+
+  // if (Object.keys(ctx.request.files).indexOf('image') === -1) {
+  //   ctx.request.files = undefined;
+  //   await next();
+  //   return;
+  // }
+
+  // if (Array.isArray(ctx.request.files.image)) {
+  //   ctx.throw(400, 'more than one file received by field "image"');
+  // }
+
+  // if (!isImage(ctx.request.files.image.mimetype)) {
+  //   ctx.throw(400, 'bad image mime type');
+  // }
+
+  // await next();
 };
 
 module.exports.title = async (ctx, next) => {
-  const title = _checkText(ctx.request?.body?.title);
+  ctx.request.body.title = ctx.request.body?.title?.trim();
 
-  if (!title) {
+  if (!ctx.request.body.title) {
     ctx.throw(400, 'title is empty');
   }
-
-  ctx.request.body.title = title;
 
   await next();
 };
@@ -87,8 +103,4 @@ async function _checkParent(id, parentId) {
   if (parent.parent) {
     await _checkParent(id, parent.parent);
   }
-}
-
-function _checkText(text) {
-  return text?.trim();
 }

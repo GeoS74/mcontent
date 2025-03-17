@@ -27,8 +27,9 @@ module.exports.get = async (ctx) => {
 module.exports.add = async (ctx) => {
   // ctx.request.body.image = await _processingImage(ctx.request.files.image);
 
-  ctx.request.body.image = ctx.request?.files?.image
-    ? await _processingImage(ctx.request.files.image) : undefined;
+  if (ctx.request.body.image) {
+    await _processingImage(ctx.request.body.image);
+  }
 
   const level = await _addLevel(ctx.request.body);
 
@@ -37,16 +38,13 @@ module.exports.add = async (ctx) => {
 };
 
 module.exports.update = async (ctx) => {
-  ctx.request.body.image = ctx.request?.files?.image
-    ? await _processingImage(ctx.request.files.image) : undefined;
+  if (ctx.request.body.image) {
+    await _processingImage(ctx.request.body.image);
+  }
 
   let level = await _getLevel(ctx.params.id);
 
   if (!level) {
-    if (ctx.request.files) {
-      // убрать временные файлы
-      deleteFiles(ctx.request.files);
-    }
     ctx.throw(404, 'level not found');
   }
 

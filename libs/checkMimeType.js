@@ -4,3 +4,10 @@ module.exports.isImage = (mimeType) => {
   }
   return false;
 };
+
+module.exports.isPDF = (mimeType) => {
+  if (/^application\/pdf\/\w+/.test(mimeType)) {
+    return true;
+  }
+  return false;
+};
