@@ -2,37 +2,11 @@ const fs = require('fs/promises');
 const { isValidObjectId } = require('mongoose');
 const CatalogLevel = require('../../models/CatalogLevel');
 const logger = require('../../libs/logger');
-
-module.exports.imageIsNotNull = async (ctx, next) => {
-  if (!ctx.request?.files) {
-    ctx.throw(400, 'image not uploaded');
-  }
-
-  if (Object.keys(ctx.request.files).length > 1) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'more than one file received');
-  }
-
-  if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'field name "image" is empty');
-  }
-
-  if (Array.isArray(ctx.request.files.image)) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'more than 1 file received by field "image"');
-  }
-
-  if (!_checkMimeType(ctx.request.files.image.mimetype)) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'bad image mime type');
-  }
-
-  await next();
-};
+const { deleteFiles } = require('../../libs/common');
+const { isImage } = require('../../libs/checkMimeType');
 
 module.exports.pdf = async (ctx, next) => {
-  if (!ctx.request?.files) {
+  if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
     ctx.request.files = undefined;
     await next();
     return;
@@ -64,7 +38,7 @@ module.exports.pdf = async (ctx, next) => {
 };
 
 module.exports.image = async (ctx, next) => {
-  if (!ctx.request?.files) {
+  if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
     ctx.request.files = undefined;
     await next();
     return;
@@ -75,15 +49,15 @@ module.exports.image = async (ctx, next) => {
   //   ctx.throw(400, 'more than one file received');
   // }
 
-  if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    _deleteFile(ctx.request.files);
-    ctx.request.files = undefined;
-    await next();
-    return;
-  }
+  // if (Object.keys(ctx.request.files).indexOf('image') === -1) {
+    // _deleteFile(ctx.request.files);
+    // ctx.request.files = undefined;
+  //   await next();
+  //   return;
+  // }
 
   if (Array.isArray(ctx.request.files.image)) {
-    _deleteFile(ctx.request.files);
+    _deleteFile(ctx.request.files.image);
     ctx.throw(400, 'more than 1 file received by field "image"');
   }
 

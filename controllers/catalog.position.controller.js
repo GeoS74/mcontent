@@ -21,6 +21,8 @@ module.exports.add = async (ctx) => {
 
   const position = await _addPosition(ctx.request.body);
 
+  // удалить временные файлы
+
   ctx.status = 201;
   ctx.body = mapper(position);
 };
