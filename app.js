@@ -60,11 +60,10 @@ app.use(noteRoutes.static);
 
 app.use(catalogLevelRoutes.publicRoutes);
 app.use(catalogLevelRoutes.routes);
+app.use(catalogLevelRoutes.static);
 
 app.use(catalogPositionRoutes.publicRoutes);
 app.use(catalogPositionRoutes.routes);
-
-// общий роут для статичных файлов каталога (позиции и разделы)
 app.use(catalogPositionRoutes.static);
 
 module.exports = app;

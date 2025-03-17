@@ -1,10 +1,10 @@
-const fs = require('fs/promises');
 const sharp = require('sharp');
 const path = require('path');
 const CatalogLevel = require('../models/CatalogLevel');
 const CatalogPosition = require('../models/CatalogPosition');
 const mapper = require('../mappers/catalog.level.mapper');
 const logger = require('../libs/logger');
+const { deleteFiles } = require('../libs/common');
 
 module.exports.getAll = async (ctx) => {
   const levels = await _getLevels();
@@ -45,7 +45,7 @@ module.exports.update = async (ctx) => {
   if (!level) {
     if (ctx.request.files) {
       // убрать временные файлы
-      _deleteFiles(ctx.request.files);
+      deleteFiles(ctx.request.files);
     }
     ctx.throw(404, 'level not found');
   }
@@ -56,9 +56,9 @@ module.exports.update = async (ctx) => {
     // если новый файл не загружается, проверить существование поля delCurrentImage
     // если оно есть, то удалить существующий файл и удалить запись о нём в БД
     if (ctx.request.body.image) {
-      _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+      deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
     } else if (ctx.request.body.delCurrentImage) {
-      _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+      deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
       await _unsetImage(ctx.params.id);
     }
   }
@@ -93,7 +93,7 @@ module.exports.delete = async (ctx) => {
 
   /* delete images */
   if (level.image?.fileName) {
-    _deleteFile(path.join(__dirname, `../files/images/catalog/${level.image.fileName}`));
+    deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
   }
 
   await _deleteLevel(ctx.params.id);
@@ -160,10 +160,10 @@ function _addLevel({
 }
 
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/catalog/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/catalog/level/images/${image.newFilename}`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
-  _deleteFile(image.filepath);
+  deleteFiles(image.filepath);
 
   return {
     originalName: image.originalFilename,
@@ -178,26 +178,4 @@ async function _resizePhoto(filepath, newFilename) {
       // height: 350,
     })
     .toFile(newFilename);
-}
-
-function _deleteFile(fpath) {
-  fs.unlink(fpath)
-    .catch((error) => {
-      if (error.code === 'ENOENT') {
-        logger.error('попытка удалить не существующий файл');
-        return;
-      }
-      logger.error(`delete file: ${error.message}`);
-    });
-}
-
-function _deleteFiles(files) {
-  for (const file of Object.values(files)) {
-    // received more than 1 file in any field with the same name
-    if (Array.isArray(file)) {
-      _deleteFiles(file);
-    } else {
-      _deleteFile(file.filepath);
-    }
-  }
 }

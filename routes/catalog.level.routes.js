@@ -1,33 +1,16 @@
-const { readdir, mkdir } = require('node:fs/promises');
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
+const serve = require('koa-static');
+const mount = require('koa-mount');
 
+const { dirInit } = require('../libs/common');
 const controller = require('../controllers/catalog.level.controller');
 const validator = require('../middleware/validators/catalog.level.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const config = require('../config');
 
-(async () => {
-  try {
-    await readdir('./files/images/catalog');
-  } catch (error) {
-    mkdir('./files/images/catalog', {
-      recursive: true,
-    });
-  }
-})();
-
-const optional = {
-  formidable: {
-    uploadDir: './files',
-    allowEmptyFiles: false,
-    minFileSize: 1,
-    multiples: true,
-    hashAlgorithm: 'md5',
-    keepExtensions: true,
-  },
-  multipart: true,
-};
+dirInit('./files/catalog/level/images');
 
 /*
 * роут без проверки access токена
@@ -48,7 +31,7 @@ module.exports.publicRoutes = publicRouter.routes();
 */
 const router = new Router({ prefix: '/api/mcontent/catalog/level' });
 
-router.use(accessCheck, emailCheck);
+// router.use(accessCheck, emailCheck);
 
 router.get(
   '/:id',
@@ -58,8 +41,8 @@ router.get(
 
 router.post(
   '/',
-  koaBody(optional),
-  validator.image, // imageIsNotNull
+  koaBody(config.koaBodyOptional),
+  validator.image,
   validator.title,
   validator.parent,
   controller.add,
@@ -67,7 +50,7 @@ router.post(
 
 router.patch(
   '/:id',
-  koaBody(optional),
+  koaBody(config.koaBodyOptional),
   validator.objectId,
   validator.image,
   validator.title,
@@ -82,3 +65,6 @@ router.delete(
 );
 
 module.exports.routes = router.routes();
+
+// static files
+module.exports.static = mount('/api/mcontent/static/catalog/level/images', serve('./files/catalog/level/images'));

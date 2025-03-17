@@ -180,5 +180,7 @@
 ```
 
 ##### Получить изображение раздела или позиции
-`GET /api/mcontent/static/images/catalog/{fileName}`
+`GET /api/mcontent/static/catalog/level/images/{fileName}`
+`GET /api/mcontent/static/catalog/position/images/{fileName}`
+`GET /api/mcontent/static/catalog/position/pdf/{fileName}`
 где {fileName} - это `fileName`

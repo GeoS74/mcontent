@@ -1,35 +1,17 @@
-const { readdir, mkdir } = require('node:fs/promises');
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
 const serve = require('koa-static');
 const mount = require('koa-mount');
 
+const { dirInit } = require('../libs/common');
 const controller = require('../controllers/catalog.position.controller');
 const validator = require('../middleware/validators/catalog.position.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const config = require('../config');
 
-(async () => {
-  try {
-    await readdir('./files/images/catalog/pdf');
-  } catch (error) {
-    mkdir('./files/images/catalog/pdf', {
-      recursive: true,
-    });
-  }
-})();
-
-const optional = {
-  formidable: {
-    uploadDir: './files',
-    allowEmptyFiles: false,
-    minFileSize: 1,
-    multiples: true,
-    hashAlgorithm: 'md5',
-    keepExtensions: true,
-  },
-  multipart: true,
-};
+dirInit('./files/catalog/position/images');
+dirInit('./files/catalog/position/pdf');
 
 /*
 * роут без проверки access токена
@@ -63,10 +45,9 @@ router.get(
   validator.objectId,
   controller.get,
 );
-
 router.post(
   '/',
-  koaBody(optional),
+  koaBody(config.koaBodyOptional),
   validator.pdf,
   validator.image,
   validator.level,
@@ -78,7 +59,7 @@ router.post(
 );
 router.patch(
   '/:id',
-  koaBody(optional),
+  koaBody(config.koaBodyOptional),
   validator.objectId,
   validator.level,
   validator.pdf,
@@ -98,5 +79,5 @@ router.delete(
 module.exports.routes = router.routes();
 
 // static files
-module.exports.static = mount('/api/mcontent/static/images/catalog', serve('./files/images/catalog'));
-module.exports.static = mount('/api/mcontent/static/pdf/catalog', serve('./files/images/catalog/pdf'));
+module.exports.static = mount('/api/mcontent/static/catalog/position/images', serve('./files/catalog/position/images'));
+module.exports.static = mount('/api/mcontent/static/catalog/position/pdf', serve('./files/catalog/position/pdf'));

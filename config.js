@@ -23,4 +23,15 @@ module.exports = {
   log: {
     file: 'app.log',
   },
+  koaBodyOptional: {
+    formidable: {
+      uploadDir: './files',
+      allowEmptyFiles: false,
+      minFileSize: 1,
+      multiples: true,
+      hashAlgorithm: 'md5',
+      keepExtensions: true,
+    },
+    multipart: true,
+  },
 };
