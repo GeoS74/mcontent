@@ -16,7 +16,8 @@ const noteRoutes = require('./routes/note.routes');
 const catalogLevelRoutes = require('./routes/catalog.level.routes');
 const catalogPositionRoutes = require('./routes/catalog.position.routes');
 
-require('./libs/tempFileCleaner')(5000);
+require('child_process').fork('./child_process/tempFileCleaner', [5000]);
+// require('./libs/tempFileCleaner')(5000);
 
 const app = new Koa();
 

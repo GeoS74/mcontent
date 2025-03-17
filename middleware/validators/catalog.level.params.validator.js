@@ -1,6 +1,5 @@
 const { isValidObjectId } = require('mongoose');
 const CatalogLevel = require('../../models/CatalogLevel');
-const { deleteFiles } = require('../../libs/common');
 const { isImage } = require('../../libs/checkMimeType');
 
 module.exports.image = async (ctx, next) => {
@@ -11,24 +10,20 @@ module.exports.image = async (ctx, next) => {
   }
 
   if (Object.keys(ctx.request.files).length > 1) {
-    deleteFiles(ctx.request.files);
     ctx.throw(400, 'more than one file received');
   }
 
   if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    deleteFiles(ctx.request.files);
     ctx.request.files = undefined;
     await next();
     return;
   }
 
   if (Array.isArray(ctx.request.files.image)) {
-    deleteFiles(ctx.request.files);
     ctx.throw(400, 'more than one file received by field "image"');
   }
 
   if (!isImage(ctx.request.files.image.mimetype)) {
-    deleteFiles(ctx.request.files);
     ctx.throw(400, 'bad image mime type');
   }
 
@@ -39,7 +34,6 @@ module.exports.title = async (ctx, next) => {
   const title = _checkText(ctx.request?.body?.title);
 
   if (!title) {
-    deleteFiles(ctx.request.files);
     ctx.throw(400, 'title is empty');
   }
 
@@ -51,14 +45,12 @@ module.exports.title = async (ctx, next) => {
 module.exports.parent = async (ctx, next) => {
   if (ctx.request.body.parent) {
     if (!isValidObjectId(ctx.request.body.parent)) {
-      deleteFiles(ctx.request.files);
       ctx.throw(400, 'invalid parent id of catalog level');
     }
 
     try {
       await _checkParent(ctx.params.id, ctx.request.body.parent);
     } catch (e) {
-      deleteFiles(ctx.request.files);
       ctx.throw(400, e.message);
     }
   }
@@ -68,7 +60,6 @@ module.exports.parent = async (ctx, next) => {
 
 module.exports.objectId = async (ctx, next) => {
   if (!ctx.params.id || !isValidObjectId(ctx.params.id)) {
-    deleteFiles(ctx.request.files);
     ctx.throw(400, 'invalid catalog level id');
   }
 
