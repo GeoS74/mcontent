@@ -8,7 +8,6 @@ const controller = require('../controllers/price.controller');
 const validator = require('../middleware/validators/price.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
-const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 const config = require('../config');
 
 dirInit('./files/price');
@@ -34,7 +33,6 @@ router.use(accessCheck, emailCheck);
 router.post(
   '/',
   koaBody(config.koaBodyOptional),
-  bodyNotBeEmpty,
   validator.priceIsNotNull,
   controller.add,
 );

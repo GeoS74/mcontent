@@ -1,4 +1,3 @@
-const { readdir, mkdir } = require('node:fs/promises');
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
 const serve = require('koa-static');
@@ -9,7 +8,6 @@ const controller = require('../controllers/testimonial.controller');
 const validator = require('../middleware/validators/testimonial.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
-const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 const config = require('../config');
 
 dirInit('./files/images/testimonial');
@@ -49,7 +47,6 @@ router.get(
 router.post(
   '/',
   koaBody(config.koaBodyOptional),
-  bodyNotBeEmpty,
   validator.photoIsNotNull,
   validator.name,
   validator.message,
@@ -60,7 +57,6 @@ router.post(
 router.patch(
   '/:id',
   koaBody(config.koaBodyOptional),
-  bodyNotBeEmpty,
   validator.objectId,
   validator.photo,
   validator.name,

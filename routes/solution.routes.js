@@ -6,7 +6,6 @@ const controller = require('../controllers/solution.controller');
 const validator = require('../middleware/validators/progress.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
-const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 /*
 * роут без проверки access токена
@@ -42,8 +41,7 @@ router.get(
 
 router.post(
   '/',
-  koaBody({multipart: true}),
-  bodyNotBeEmpty,
+  koaBody({ multipart: true }),
   validator.title,
   validator.message,
   validator.cssClass,
@@ -52,8 +50,7 @@ router.post(
 );
 router.patch(
   '/:id',
-  koaBody({multipart: true}),
-  bodyNotBeEmpty,
+  koaBody({ multipart: true }),
   validator.objectId,
   validator.title,
   validator.message,
