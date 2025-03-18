@@ -154,6 +154,10 @@
 }
 ```
 
+##### Получить изображение для раздела
+`GET /api/mcontent/static/catalog/level/images/{fileName}`
+где {fileName} - это `fileName`
+
 ##### Запрос позиций каталога
 `GET /api/mcontent/catalog/position/public`
 
@@ -166,10 +170,16 @@
   description: описание,
   isPublic: булево значение,
   alias: псевдоним (для формирования ссылки),
-  image: {
-    originalName: исходное имя файла,
-    fileName: текущее имя файла,
-  },
+  files: {
+    image: {
+      originalName: исходное имя файла,
+      fileName: текущее имя файла,
+    },
+    pdf: {
+      originalName: исходное имя файла,
+      fileName: текущее имя файла,
+    },
+  }
   level: {
     id: идентификатор уровня,
     title: наименование уровня,
@@ -179,8 +189,7 @@
 }
 ```
 
-##### Получить изображение раздела или позиции
-`GET /api/mcontent/static/catalog/level/images/{fileName}`
+##### Получить изображение или pdf-файл для позиции
 `GET /api/mcontent/static/catalog/position/images/{fileName}`
 `GET /api/mcontent/static/catalog/position/pdf/{fileName}`
 где {fileName} - это `fileName`
