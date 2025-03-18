@@ -1,9 +1,9 @@
-const fs = require('fs/promises');
 const sharp = require('sharp');
 const path = require('path');
 const CatalogPosition = require('../models/CatalogPosition');
 const mapper = require('../mappers/catalog.position.mapper');
 const logger = require('../libs/logger');
+const { deleteFile, renameFile } = require('../libs/common');
 
 module.exports.get = async (ctx) => {
   const position = await _getPosition(ctx.params.id);
@@ -16,28 +16,32 @@ module.exports.get = async (ctx) => {
 };
 
 module.exports.add = async (ctx) => {
-  ctx.request.body.image = ctx.request?.files?.image
-    ? await _processingImage(ctx.request.files.image) : undefined;
+  if (ctx.request.body.image) {
+    ctx.request.body.image = await _processingImage(ctx.request.body.image);
+  }
+
+  if (ctx.request.body.pdf) {
+    ctx.request.body.pdf = await _processingPDF(ctx.request.body.pdf);
+  }
 
   const position = await _addPosition(ctx.request.body);
-
-  // удалить временные файлы
 
   ctx.status = 201;
   ctx.body = mapper(position);
 };
 
 module.exports.update = async (ctx) => {
-  ctx.request.body.image = ctx.request?.files?.image
-    ? await _processingImage(ctx.request.files.image) : undefined;
+  if (ctx.request.body.image) {
+    ctx.request.body.image = await _processingImage(ctx.request.body.image);
+  }
+
+  if (ctx.request.body.pdf) {
+    ctx.request.body.pdf = await _processingPDF(ctx.request.body.pdf);
+  }
 
   let position = await _getPosition(ctx.params.id);
 
   if (!position) {
-    if (ctx.request.files) {
-      // убрать временные файлы
-      _deleteFiles(ctx.request.files);
-    }
     ctx.throw(404, 'position not found');
   }
 
@@ -47,10 +51,23 @@ module.exports.update = async (ctx) => {
     // если новый файл не загружается, проверить существование поля delCurrentImage
     // если оно есть, то удалить существующий файл и удалить запись о нём в БД
     if (ctx.request.body.image) {
-      _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
+      deleteFile(path.join(__dirname, `../files/catalog/position/images/${position.image.fileName}`));
     } else if (ctx.request.body.delCurrentImage) {
-      _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
+      deleteFile(path.join(__dirname, `../files/catalog/position/images/${position.image.fileName}`));
       await _unsetImage(ctx.params.id);
+    }
+  }
+
+  // есть прикреплённый pdf
+  if (position.pdf?.fileName) {
+    // если загружается новый файл, то удалить старый файл
+    // если новый файл не загружается, проверить существование поля delCurrentImage
+    // если оно есть, то удалить существующий файл и удалить запись о нём в БД
+    if (ctx.request.body.pdf) {
+      deleteFile(path.join(__dirname, `../files/catalog/position/pdf/${position.pdf.fileName}`));
+    } else if (ctx.request.body.delCurrentPDF) {
+      deleteFile(path.join(__dirname, `../files/catalog/position/pdf/${position.pdf.fileName}`));
+      await _unsetPDF(ctx.params.id);
     }
   }
 
@@ -69,7 +86,12 @@ module.exports.delete = async (ctx) => {
 
   /* delete images */
   if (position.image?.fileName) {
-    _deleteFile(path.join(__dirname, `../files/images/catalog/${position.image.fileName}`));
+    deleteFile(path.join(__dirname, `../files/catalog/position/images/${position.image.fileName}`));
+  }
+
+  /* delete pdf */
+  if (position.pdf?.fileName) {
+    deleteFile(path.join(__dirname, `../files/catalog/position/pdf/${position.pdf.fileName}`));
   }
 
   ctx.status = 200;
@@ -87,6 +109,7 @@ function _addPosition({
   description,
   isPublic,
   image,
+  pdf,
   level,
 }) {
   return CatalogPosition.create({
@@ -95,6 +118,7 @@ function _addPosition({
     description,
     isPublic: !!isPublic,
     image,
+    pdf,
     level,
   }).then((p) => p.populate({ path: 'level' }));
 }
@@ -105,6 +129,7 @@ function _updatePosition(id, {
   description,
   isPublic,
   image,
+  pdf,
   level,
 }) {
   return CatalogPosition.findByIdAndUpdate(
@@ -115,6 +140,7 @@ function _updatePosition(id, {
       description,
       isPublic,
       image,
+      pdf,
       level,
     },
     {
@@ -136,11 +162,27 @@ function _unsetImage(id) {
   );
 }
 
+function _unsetPDF(id) {
+  return CatalogPosition.findByIdAndUpdate(
+    id,
+    { $unset: { pdf: '' } },
+  );
+}
+
+async function _processingPDF(pdf) {
+  await renameFile(pdf.filepath, path.join(__dirname, `../files/catalog/position/pdf/${pdf.newFilename}`));
+
+  return {
+    originalName: pdf.originalFilename,
+    fileName: pdf.newFilename,
+  };
+}
+
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/catalog/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/catalog/position/images/${image.newFilename}`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
-  _deleteFile(image.filepath);
+  deleteFile(image.filepath);
 
   return {
     originalName: image.originalFilename,
@@ -158,28 +200,6 @@ async function _resizePhoto(filepath, newFilename) {
     .toFile(newFilename);
 }
 
-function _deleteFile(fpath) {
-  fs.unlink(fpath)
-    .catch((error) => {
-      if (error.code === 'ENOENT') {
-        logger.error('попытка удалить не существующий файл');
-        return;
-      }
-      logger.error(`delete file: ${error.message}`);
-    });
-}
-
-function _deleteFiles(files) {
-  for (const file of Object.values(files)) {
-    // received more than 1 file in any field with the same name
-    if (Array.isArray(file)) {
-      _deleteFiles(file);
-    } else {
-      _deleteFile(file.filepath);
-    }
-  }
-}
-
 // /**
 //  * поиск записи
 //  *
@@ -190,7 +210,6 @@ function _deleteFiles(files) {
 //  * - isPublic
 //  *
 //  */
-
 module.exports.search = async (ctx) => {
   const data = _makeFilterRules(ctx.query);
   const positions = await _searchSide(data);

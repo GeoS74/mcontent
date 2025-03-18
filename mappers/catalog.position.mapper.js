@@ -5,13 +5,15 @@ module.exports = (data) => ({
   article: data.article || '',
   description: data.description || '',
   isPublic: data.isPublic,
-  image: {
-    originalName: data.image.originalName,
-    fileName: data.image.fileName,
-  },
-  pdf: {
-    originalName: data.pdf.originalName,
-    fileName: data.pdf.fileName,
+  files: {
+    image: {
+      originalName: data.image.originalName,
+      fileName: data.image.fileName,
+    },
+    pdf: {
+      originalName: data.pdf.originalName,
+      fileName: data.pdf.fileName,
+    },
   },
   level: {
     id: data.level.id,

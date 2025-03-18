@@ -1,5 +1,5 @@
 const { readdirSync, mkdirSync } = require('node:fs');
-const { unlink } = require('fs/promises');
+const { unlink, rename } = require('fs/promises');
 const logger = require('./logger');
 
 module.exports.dirInit = (dir) => {
@@ -21,5 +21,15 @@ module.exports.deleteFile = async (fpath) => {
         return;
       }
       logger.error(`delete file: ${error.message}`);
+    });
+};
+
+// ожидает получить ctx.request.files или строку
+module.exports.renameFile = async (oldpath, newpath) => {
+  if (!oldpath || !newpath) return;
+
+  rename(oldpath, newpath)
+    .catch((error) => {
+      logger.error(`rename file: ${error.message}`);
     });
 };

@@ -20,32 +20,6 @@ module.exports.image = async (ctx, next) => {
   ctx.request.body.image = ctx.request.files.image;
 
   await next();
-
-  // if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
-  //   ctx.request.files = undefined;
-  //   await next();
-  //   return;
-  // }
-
-  // if (Object.keys(ctx.request.files).length > 1) {
-  //   ctx.throw(400, 'more than one file received');
-  // }
-
-  // if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-  //   ctx.request.files = undefined;
-  //   await next();
-  //   return;
-  // }
-
-  // if (Array.isArray(ctx.request.files.image)) {
-  //   ctx.throw(400, 'more than one file received by field "image"');
-  // }
-
-  // if (!isImage(ctx.request.files.image.mimetype)) {
-  //   ctx.throw(400, 'bad image mime type');
-  // }
-
-  // await next();
 };
 
 module.exports.title = async (ctx, next) => {

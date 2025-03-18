@@ -6,7 +6,7 @@ module.exports.isImage = (mimeType) => {
 };
 
 module.exports.isPDF = (mimeType) => {
-  if (/^application\/pdf\/\w+/.test(mimeType)) {
+  if (/^application\/pdf/.test(mimeType)) {
     return true;
   }
   return false;
