@@ -8,6 +8,7 @@ const controller = require('../controllers/slider.controller');
 const validator = require('../middleware/validators/slider.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 (async () => {
   try {
@@ -66,6 +67,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.imageIsNotNull,
   validator.title,
   validator.message,
@@ -75,6 +77,7 @@ router.post(
 router.patch(
   '/:id',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.objectId,
   validator.image,
   validator.title,

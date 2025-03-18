@@ -9,6 +9,7 @@ const validator = require('../middleware/validators/catalog.position.params.vali
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 const config = require('../config');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 dirInit('./files/catalog/position/images');
 dirInit('./files/catalog/position/pdf');
@@ -38,7 +39,7 @@ module.exports.publicRoutes = publicRouter.routes();
 */
 const router = new Router({ prefix: '/api/mcontent/catalog/position' });
 
-// router.use(accessCheck, emailCheck);
+router.use(accessCheck, emailCheck);
 
 router.get(
   '/:id',
@@ -48,6 +49,7 @@ router.get(
 router.post(
   '/',
   koaBody(config.koaBodyOptional),
+  bodyNotBeEmpty,
   validator.pdf,
   validator.image,
   validator.level,
@@ -60,6 +62,7 @@ router.post(
 router.patch(
   '/:id',
   koaBody(config.koaBodyOptional),
+  bodyNotBeEmpty,
   validator.objectId,
   validator.level,
   validator.pdf,

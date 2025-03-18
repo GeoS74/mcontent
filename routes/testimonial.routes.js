@@ -8,6 +8,7 @@ const controller = require('../controllers/testimonial.controller');
 const validator = require('../middleware/validators/testimonial.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 (async () => {
   try {
@@ -66,6 +67,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.photoIsNotNull,
   validator.name,
   validator.message,
@@ -76,6 +78,7 @@ router.post(
 router.patch(
   '/:id',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.objectId,
   validator.photo,
   validator.name,

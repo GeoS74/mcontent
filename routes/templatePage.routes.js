@@ -5,6 +5,7 @@ const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 const validator = require('../middleware/validators/templatepages.params.validator');
 const controller = require('../controllers/templatePage.controller');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 /*
 * роут без проверки access токена
@@ -34,6 +35,7 @@ router.get('/', controller.getAll);
 router.patch(
   '/:alias',
   koaBody({ multipart: true }),
+  bodyNotBeEmpty,
   validator.alias,
   validator.metaTitle,
   validator.metaDescription,

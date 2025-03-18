@@ -1,9 +1,9 @@
-const fs = require('fs/promises');
 const sharp = require('sharp');
 const path = require('path');
 const Note = require('../models/Note');
 const mapper = require('../mappers/slider.mapper');
 const logger = require('../libs/logger');
+const { deleteFile } = require('../libs/common');
 
 module.exports.get = async (ctx) => {
   const note = await _getNote(ctx.params.id);
@@ -16,7 +16,7 @@ module.exports.get = async (ctx) => {
 };
 
 module.exports.add = async (ctx) => {
-  ctx.request.body.image = await _processingImage(ctx.request.files.image);
+  ctx.request.body.image = await _processingImage(ctx.request.body.image);
 
   const note = await _addNote(ctx.request.body);
 
@@ -25,22 +25,19 @@ module.exports.add = async (ctx) => {
 };
 
 module.exports.update = async (ctx) => {
-  ctx.request.body.image = ctx.request?.files?.image
-    ? await _processingImage(ctx.request.files.image) : undefined;
+  if (ctx.request.body.image) {
+    ctx.request.body.image = await _processingImage(ctx.request.body.image);
+  }
 
   let note = await _getNote(ctx.params.id);
 
   if (!note) {
-    if (ctx.request.files) {
-      // убрать временные файлы
-      _deleteFiles(ctx.request.files);
-    }
     ctx.throw(404, 'note not found');
   }
 
   // убрать старый файл
   if (ctx.request.body.image) {
-    _deleteFile(path.join(__dirname, `../files/images/note/${note.image.fileName}`));
+    deleteFile(path.join(__dirname, `../files/images/note/${note.image.fileName}`));
   }
 
   note = await _updateNote(ctx.params.id, ctx.request.body);
@@ -58,7 +55,7 @@ module.exports.delete = async (ctx) => {
 
   /* delete images */
   if (note.image) {
-    _deleteFile(path.join(__dirname, `../files/images/note/${note.image.fileName}`));
+    deleteFile(path.join(__dirname, `../files/images/note/${note.image.fileName}`));
   }
 
   ctx.status = 200;
@@ -111,7 +108,7 @@ async function _processingImage(image) {
   await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/note/${image.newFilename}`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
-  _deleteFile(image.filepath);
+  deleteFile(image.filepath);
 
   return {
     originalName: image.originalFilename,
@@ -128,28 +125,6 @@ async function _resizePhoto(filepath, newFilename) {
     .toFile(newFilename);
 }
 
-function _deleteFile(fpath) {
-  fs.unlink(fpath)
-    .catch((error) => {
-      if (error.code === 'ENOENT') {
-        logger.error('попытка удалить не существующий файл');
-        return;
-      }
-      logger.error(`delete file: ${error.message}`);
-    });
-}
-
-function _deleteFiles(files) {
-  for (const file of Object.values(files)) {
-    // received more than 1 file in any field with the same name
-    if (Array.isArray(file)) {
-      _deleteFiles(file);
-    } else {
-      _deleteFile(file.filepath);
-    }
-  }
-}
-
 // /**
 //  * поиск записи
 //  *
@@ -159,7 +134,6 @@ function _deleteFiles(files) {
 //  * - isPublic
 //  *
 //  */
-
 module.exports.search = async (ctx) => {
   const data = _makeFilterRules(ctx.query);
   const notes = await _searchNote(data);

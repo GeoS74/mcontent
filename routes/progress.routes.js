@@ -5,6 +5,7 @@ const controller = require('../controllers/progress.controller');
 const validator = require('../middleware/validators/progress.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 const optional = {
   multipart: true,
@@ -45,6 +46,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.title,
   validator.message,
   validator.cssClass,
@@ -54,6 +56,7 @@ router.post(
 router.patch(
   '/:id',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.objectId,
   validator.title,
   validator.message,

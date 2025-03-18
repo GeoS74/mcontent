@@ -8,6 +8,7 @@ const controller = require('../controllers/team.controller');
 const validator = require('../middleware/validators/team.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 (async () => {
   try {
@@ -66,6 +67,7 @@ router.get(
 router.post(
   '/',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.photoIsNotNull,
   validator.name,
   validator.position,
@@ -75,6 +77,7 @@ router.post(
 router.patch(
   '/:id',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.objectId,
   validator.photo,
   validator.name,

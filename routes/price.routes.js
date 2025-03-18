@@ -8,6 +8,7 @@ const controller = require('../controllers/price.controller');
 const validator = require('../middleware/validators/price.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
+const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
 (async () => {
   try {
@@ -52,6 +53,7 @@ router.use(accessCheck, emailCheck);
 router.post(
   '/',
   koaBody(optional),
+  bodyNotBeEmpty,
   validator.priceIsNotNull,
   controller.add,
 );
