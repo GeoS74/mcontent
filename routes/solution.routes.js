@@ -8,10 +8,6 @@ const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
 
-const optional = {
-  multipart: true,
-};
-
 /*
 * роут без проверки access токена
 */
@@ -46,7 +42,7 @@ router.get(
 
 router.post(
   '/',
-  koaBody(optional),
+  koaBody({multipart: true}),
   bodyNotBeEmpty,
   validator.title,
   validator.message,
@@ -56,7 +52,7 @@ router.post(
 );
 router.patch(
   '/:id',
-  koaBody(optional),
+  koaBody({multipart: true}),
   bodyNotBeEmpty,
   validator.objectId,
   validator.title,

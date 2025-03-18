@@ -37,7 +37,7 @@ module.exports.publicRoutes = publicRouter.routes();
 */
 const router = new Router({ prefix: '/api/mcontent/note' });
 
-// router.use(accessCheck, emailCheck);
+router.use(accessCheck, emailCheck);
 
 router.get(
   '/:id',

@@ -4,33 +4,15 @@ const { koaBody } = require('koa-body');
 const serve = require('koa-static');
 const mount = require('koa-mount');
 
+const { dirInit } = require('../libs/common');
 const controller = require('../controllers/testimonial.controller');
 const validator = require('../middleware/validators/testimonial.params.validator');
 const accessCheck = require('../middleware/access.check');
 const emailCheck = require('../middleware/email.check');
 const bodyNotBeEmpty = require('../middleware/bodyNotBeEmpty');
+const config = require('../config');
 
-(async () => {
-  try {
-    await readdir('./files/images/testimonial');
-  } catch (error) {
-    mkdir('./files/images/testimonial', {
-      recursive: true,
-    });
-  }
-})();
-
-const optional = {
-  formidable: {
-    uploadDir: './files',
-    allowEmptyFiles: false,
-    minFileSize: 1,
-    multiples: true,
-    hashAlgorithm: 'md5',
-    keepExtensions: true,
-  },
-  multipart: true,
-};
+dirInit('./files/images/testimonial');
 
 /*
 * роут без проверки access токена
@@ -66,7 +48,7 @@ router.get(
 
 router.post(
   '/',
-  koaBody(optional),
+  koaBody(config.koaBodyOptional),
   bodyNotBeEmpty,
   validator.photoIsNotNull,
   validator.name,
@@ -77,7 +59,7 @@ router.post(
 );
 router.patch(
   '/:id',
-  koaBody(optional),
+  koaBody(config.koaBodyOptional),
   bodyNotBeEmpty,
   validator.objectId,
   validator.photo,
