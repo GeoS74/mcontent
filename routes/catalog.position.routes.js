@@ -82,5 +82,5 @@ router.delete(
 module.exports.routes = router.routes();
 
 // static files
-module.exports.static = mount('/api/mcontent/static/catalog/position/images', serve('./files/catalog/position/images'));
-module.exports.static = mount('/api/mcontent/static/catalog/position/pdf', serve('./files/catalog/position/pdf'));
+module.exports.staticImage = mount('/api/mcontent/static/catalog/position/images', serve('./files/catalog/position/images'));
+module.exports.staticPDF = mount('/api/mcontent/static/catalog/position/pdf', serve('./files/catalog/position/pdf'));

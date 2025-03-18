@@ -67,6 +67,7 @@ app.use(catalogLevelRoutes.static);
 
 app.use(catalogPositionRoutes.publicRoutes);
 app.use(catalogPositionRoutes.routes);
-app.use(catalogPositionRoutes.static);
+app.use(catalogPositionRoutes.staticImage);
+app.use(catalogPositionRoutes.staticPDF);
 
 module.exports = app;
