@@ -25,7 +25,7 @@ module.exports = {
   },
   tempFiles: {
     dir: './files',
-    maxms: 1000 * 60 * 10,
+    maxms: 1000 * 60,
   },
   koaBodyOptional: {
     formidable: {

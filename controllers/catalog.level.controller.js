@@ -4,7 +4,7 @@ const CatalogLevel = require('../models/CatalogLevel');
 const CatalogPosition = require('../models/CatalogPosition');
 const mapper = require('../mappers/catalog.level.mapper');
 const logger = require('../libs/logger');
-const { deleteFiles } = require('../libs/common');
+const { deleteFile } = require('../libs/common');
 
 module.exports.getAll = async (ctx) => {
   const levels = await _getLevels();
@@ -25,10 +25,8 @@ module.exports.get = async (ctx) => {
 };
 
 module.exports.add = async (ctx) => {
-  // ctx.request.body.image = await _processingImage(ctx.request.files.image);
-
   if (ctx.request.body.image) {
-    await _processingImage(ctx.request.body.image);
+    ctx.request.body.image = await _processingImage(ctx.request.body.image);
   }
 
   const level = await _addLevel(ctx.request.body);
@@ -39,7 +37,7 @@ module.exports.add = async (ctx) => {
 
 module.exports.update = async (ctx) => {
   if (ctx.request.body.image) {
-    await _processingImage(ctx.request.body.image);
+    ctx.request.body.image = await _processingImage(ctx.request.body.image);
   }
 
   let level = await _getLevel(ctx.params.id);
@@ -54,9 +52,9 @@ module.exports.update = async (ctx) => {
     // если новый файл не загружается, проверить существование поля delCurrentImage
     // если оно есть, то удалить существующий файл и удалить запись о нём в БД
     if (ctx.request.body.image) {
-      deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
+      deleteFile(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
     } else if (ctx.request.body.delCurrentImage) {
-      deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
+      deleteFile(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
       await _unsetImage(ctx.params.id);
     }
   }
@@ -91,7 +89,7 @@ module.exports.delete = async (ctx) => {
 
   /* delete images */
   if (level.image?.fileName) {
-    deleteFiles(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
+    deleteFile(path.join(__dirname, `../files/catalog/level/images/${level.image.fileName}`));
   }
 
   await _deleteLevel(ctx.params.id);
@@ -161,7 +159,7 @@ async function _processingImage(image) {
   await _resizePhoto(image.filepath, path.join(__dirname, `../files/catalog/level/images/${image.newFilename}`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
-  deleteFiles(image.filepath);
+  deleteFile(image.filepath);
 
   return {
     originalName: image.originalFilename,

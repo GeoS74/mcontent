@@ -11,25 +11,9 @@ module.exports.dirInit = (dir) => {
 };
 
 // ожидает получить ctx.request.files или строку
-module.exports.deleteFiles = (f) => {
-  if (!f) return;
+module.exports.deleteFile = async (fpath) => {
+  if (!fpath) return;
 
-  if (typeof f === 'string') {
-    _deleteFile(f);
-    return;
-  }
-
-  for (const file of Object.values(f)) {
-    // received more than 1 file in any field with the same name
-    if (Array.isArray(file)) {
-      this.deleteFiles(file);
-    } else {
-      _deleteFile(file.filepath);
-    }
-  }
-};
-
-async function _deleteFile(fpath) {
   unlink(fpath)
     .catch((error) => {
       if (error.code === 'ENOENT') {
@@ -38,4 +22,4 @@ async function _deleteFile(fpath) {
       }
       logger.error(`delete file: ${error.message}`);
     });
-}
+};

@@ -2,37 +2,24 @@ const fs = require('fs/promises');
 const { isValidObjectId } = require('mongoose');
 const CatalogLevel = require('../../models/CatalogLevel');
 const logger = require('../../libs/logger');
-const { deleteFiles } = require('../../libs/common');
-const { isImage } = require('../../libs/checkMimeType');
+const { isImage, isPDF } = require('../../libs/checkMimeType');
 
 module.exports.pdf = async (ctx, next) => {
-  if (!ctx.request?.files || !Object.keys(ctx.request?.files).length) {
-    ctx.request.files = undefined;
+  if (!ctx.request?.files?.pdf) {
+    ctx.request.body.pdf = undefined;
     await next();
     return;
   }
 
-  // if (Object.keys(ctx.request.files).length > 1) {
-  //   _deleteFile(ctx.request.files);
-  //   ctx.throw(400, 'more than one file received');
-  // }
-
-  if (Object.keys(ctx.request.files).indexOf('image') === -1) {
-    _deleteFile(ctx.request.files);
-    ctx.request.files = undefined;
-    await next();
-    return;
+  if (Array.isArray(ctx.request.files.pdf)) {
+    ctx.throw(400, 'more than one file received by field "pdf"');
   }
 
-  if (Array.isArray(ctx.request.files.image)) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'more than 1 file received by field "image"');
+  if (!isPDF(ctx.request.files.pdf.mimetype)) {
+    ctx.throw(400, 'bad pdf mime type');
   }
 
-  if (!_checkMimeType(ctx.request.files.image.mimetype)) {
-    _deleteFile(ctx.request.files);
-    ctx.throw(400, 'bad image mime type');
-  }
+  ctx.request.body.pdf = ctx.request.files.pdf;
 
   await next();
 };
