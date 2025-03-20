@@ -45,6 +45,11 @@ const Contact = require('../models/Contact');
       alias: 'products',
     },
     {
+      name: 'Разделы каталога',
+      tplFileName: 'section.html',
+      alias: 'section',
+    },
+    {
       name: 'Страница товара',
       tplFileName: 'product-single.html',
       alias: 'product-single',

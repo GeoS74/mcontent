@@ -2,6 +2,7 @@ module.exports = function mapper(data) {
   return {
     id: data.id,
     title: data.title,
+    description: data.description || '',
     parent: data.parent || null,
     image: {
       originalName: data?.image?.originalName,

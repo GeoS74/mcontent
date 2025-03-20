@@ -32,6 +32,11 @@ module.exports.title = async (ctx, next) => {
   await next();
 };
 
+module.exports.description = async (ctx, next) => {
+  ctx.request.body.description = ctx.request.body?.description?.trim() || '';
+  await next();
+};
+
 module.exports.parent = async (ctx, next) => {
   if (ctx.request.body.parent) {
     if (!isValidObjectId(ctx.request.body.parent)) {

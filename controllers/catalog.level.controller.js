@@ -115,6 +115,7 @@ function _deleteLevel(id) {
 
 function _updateLevel(id, {
   title,
+  description,
   parent,
   image,
 }) {
@@ -122,6 +123,7 @@ function _updateLevel(id, {
     id,
     {
       title,
+      description,
       parent: parent || null,
       image,
     },
@@ -145,11 +147,13 @@ function _getLevels() {
 
 function _addLevel({
   title,
+  description,
   parent,
   image,
 }) {
   return CatalogLevel.create({
     title,
+    description,
     parent,
     image,
   });
@@ -170,8 +174,9 @@ async function _processingImage(image) {
 async function _resizePhoto(filepath, newFilename) {
   return sharp(filepath)
     .resize({
-      width: 250,
-      // height: 350,
+      width: 700,
+      height: 700,
+      fit: 'cover',
     })
     .toFile(newFilename);
 }

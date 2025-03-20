@@ -23,6 +23,12 @@ publicRouter.get(
   controller.getAll,
 );
 
+publicRouter.get(
+  '/:id',
+  validator.objectId,
+  controller.get,
+);
+
 module.exports.publicRoutes = publicRouter.routes();
 
 /*
@@ -34,18 +40,13 @@ const router = new Router({ prefix: '/api/mcontent/catalog/level' });
 
 router.use(accessCheck, emailCheck);
 
-router.get(
-  '/:id',
-  validator.objectId,
-  controller.get,
-);
-
 router.post(
   '/',
   koaBody(config.koaBodyOptional),
   bodyNotBeEmpty,
   validator.image,
   validator.title,
+  validator.description,
   validator.parent,
   controller.add,
 );
@@ -57,6 +58,7 @@ router.patch(
   validator.objectId,
   validator.image,
   validator.title,
+  validator.description,
   validator.parent,
   controller.update,
 );
