@@ -19,15 +19,23 @@ module.exports = async (ctx, next) => {
         case 'CastError': // value does not match model type
           if (error.message.indexOf('path "deadLine"') !== -1) {
             ctx.body = { error: 'invalid deadLine' };
+            return;
           }
           if (error.message.indexOf('path "sum"') !== -1) {
             ctx.body = { error: 'invalid sum' };
+            return;
           }
-          return;
+          break;
         case 'TypeError':
         case 'ValidationError':
           ctx.body = { error: error.message };
           return;
+        case 'MongoServerError':
+          if (error.code === 11000) {
+            ctx.body = { error: 'value not unique' };
+            return;
+          }
+          break;
         default:
       }
     }

@@ -24,6 +24,17 @@ module.exports.get = async (ctx) => {
   ctx.body = mapper(level);
 };
 
+module.exports.getByAlias = async (ctx) => {
+  const level = await _getByAlias(ctx.params.alias);
+
+  if (!level) {
+    ctx.throw(404, 'level not found');
+  }
+
+  ctx.status = 200;
+  ctx.body = mapper(level);
+};
+
 module.exports.add = async (ctx) => {
   if (ctx.request.body.image) {
     ctx.request.body.image = await _processingImage(ctx.request.body.image);
@@ -135,6 +146,10 @@ function _updateLevel(id, {
 
 function _getLevel(id) {
   return CatalogLevel.findById(id);
+}
+
+function _getByAlias(alias) {
+  return CatalogLevel.findOne({ alias });
 }
 
 function _getLevels() {

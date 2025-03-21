@@ -17,6 +17,7 @@ module.exports = (data) => ({
   },
   level: {
     id: data.level.id,
+    alias: data.level.alias,
     title: data.level.title,
   },
   createdAt: data.createdAt,

@@ -22,6 +22,11 @@ module.exports.image = async (ctx, next) => {
   await next();
 };
 
+module.exports.alias = async (ctx, next) => {
+  ctx.params.alias = ctx.params.alias?.trim() || '';
+  await next();
+};
+
 module.exports.title = async (ctx, next) => {
   ctx.request.body.title = ctx.request.body?.title?.trim();
 

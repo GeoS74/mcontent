@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const connection = require('../libs/connection');
+const aliaser = require('../libs/aliaser');
 
 const Schema = new mongoose.Schema({
   parent: {
@@ -14,10 +15,18 @@ const Schema = new mongoose.Schema({
     type: String,
   },
   image: { originalName: String, fileName: String },
+  alias: {
+    type: String,
+    unique: true,
+  },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
   timestamps: true,
+});
+
+Schema.pre('save', function s() {
+  this.alias = aliaser(`${this.title}`);
 });
 
 Schema.virtual('childs', {
@@ -35,6 +44,10 @@ Schema.pre('findOne', function f() {
 });
 
 Schema.pre('findOneAndUpdate', function f() {
+  const update = this.getUpdate();
+  const alias = aliaser(`${update.title}`);
+  this.setUpdate({ ...update, alias });
+
   this.populate('childs');
 });
 

@@ -22,6 +22,7 @@ const publicRouter = new Router({ prefix: '/api/mcontent/catalog/position/public
 publicRouter.get(
   '/',
   validator.searchString,
+  validator.filterAlias,
   validator.lastId,
   validator.limit,
   validator.filterLevel,

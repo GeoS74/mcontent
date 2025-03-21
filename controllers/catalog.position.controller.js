@@ -205,6 +205,7 @@ async function _resizePhoto(filepath, newFilename) {
 //  *
 //  * возможные параметры запроса:
 //  * - search
+//  * - alias
 //  * - last
 //  * - limit
 //  * - isPublic
@@ -212,11 +213,19 @@ async function _resizePhoto(filepath, newFilename) {
 //  */
 module.exports.search = async (ctx) => {
   const data = _makeFilterRules(ctx.query);
-  const positions = await _searchSide(data);
+  let positions = await _searchSide(data);
+
+  if (ctx.query.alias) {
+    positions = _filteredByAlias(ctx.query.alias, positions);
+  }
 
   ctx.body = positions.map((pos) => (mapper(pos)));
   ctx.status = 200;
 };
+
+function _filteredByAlias(alias, positions) {
+  return positions.filter((e) => e.level.alias === alias);
+}
 
 async function _searchSide(data) {
   return CatalogPosition.find(data.filter, data.projection)
@@ -237,6 +246,7 @@ function _makeFilterRules({
 }) {
   const filter = {};
   const projection = {};
+  const populateMatch = {};
 
   if (search) {
     filter.$text = {
@@ -259,5 +269,7 @@ function _makeFilterRules({
     filter.isPublic = true;
   }
 
-  return { filter, projection, limit };
+  return {
+    filter, projection, limit, populateMatch,
+  };
 }

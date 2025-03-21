@@ -58,6 +58,12 @@ module.exports.filterLevel = async (ctx, next) => {
   await next();
 };
 
+module.exports.filterAlias = async (ctx, next) => {
+  ctx.query.alias = ctx.query.alias || '';
+
+  await next();
+};
+
 module.exports.lastId = async (ctx, next) => {
   if (ctx.query.last) {
     if (!isValidObjectId(ctx.query.last)) {

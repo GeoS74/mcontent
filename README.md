@@ -128,15 +128,16 @@
 
 `GET /api/mcontent/catalog/level/public`
 
-`GET /api/mcontent/catalog/level/public/{id}`
+`GET /api/mcontent/catalog/level/public/{alias}`
 
-где {id} - это идентификатор уровня
+где {alias} - это alias уровня
 
-возвращает массив объектов:
+возвращает массив объектов или один объект, если запрос использует alias:
 ```
 {
   id: идентификатор уровня,
   title: название,
+  alias: алиас раздела,
   parent: null, id родительского уровня,
   image: {
     originalName: исходное имя файла,
@@ -165,8 +166,18 @@
 `GET /api/mcontent/static/catalog/level/images/{fileName}`
 где {fileName} - это `fileName`
 
+
 ##### Запрос позиций каталога
+
 `GET /api/mcontent/catalog/position/public`
+
+Возможные параметры запроса:
+- search
+- alias
+- last
+- limit
+- isPublic
+
 
 возвращает массив объектов:
 ```

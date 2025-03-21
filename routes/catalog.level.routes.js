@@ -24,9 +24,9 @@ publicRouter.get(
 );
 
 publicRouter.get(
-  '/:id',
-  validator.objectId,
-  controller.get,
+  '/:alias',
+  validator.alias,
+  controller.getByAlias,
 );
 
 module.exports.publicRoutes = publicRouter.routes();
@@ -39,6 +39,12 @@ module.exports.publicRoutes = publicRouter.routes();
 const router = new Router({ prefix: '/api/mcontent/catalog/level' });
 
 router.use(accessCheck, emailCheck);
+
+router.get(
+  '/:id',
+  validator.objectId,
+  controller.get,
+);
 
 router.post(
   '/',
