@@ -60,7 +60,11 @@ module.exports.filterLevel = async (ctx, next) => {
 
 module.exports.filterAlias = async (ctx, next) => {
   ctx.query.alias = ctx.query.alias || '';
+  await next();
+};
 
+module.exports.filterLevelAlias = async (ctx, next) => {
+  ctx.query.levelAlias = ctx.query.levelAlias || '';
   await next();
 };
 

@@ -205,26 +205,42 @@ async function _resizePhoto(filepath, newFilename) {
 //  *
 //  * возможные параметры запроса:
 //  * - search
-//  * - alias
+//  * - levelAlias
 //  * - last
 //  * - limit
 //  * - isPublic
 //  *
 //  */
 module.exports.search = async (ctx) => {
+  if (ctx.query.alias) {
+    const position = await _getPositionByAlias(ctx.query.alias);
+
+    if (!position) {
+      ctx.throw(404, 'position not found');
+    }
+    ctx.status = 200;
+    ctx.body = mapper(position);
+    return;
+  }
+
   const data = _makeFilterRules(ctx.query);
   let positions = await _searchSide(data);
 
-  if (ctx.query.alias) {
-    positions = _filteredByAlias(ctx.query.alias, positions);
+  if (ctx.query.levelAlias) {
+    positions = _filteredByAlias(ctx.query.levelAlias, positions);
   }
 
   ctx.body = positions.map((pos) => (mapper(pos)));
   ctx.status = 200;
 };
 
-function _filteredByAlias(alias, positions) {
-  return positions.filter((e) => e.level.alias === alias);
+function _getPositionByAlias(alias) {
+  return CatalogPosition.findOne({ alias })
+    .populate({ path: 'level' });
+}
+
+function _filteredByAlias(levelAlias, positions) {
+  return positions.filter((e) => e.level.alias === levelAlias);
 }
 
 async function _searchSide(data) {
