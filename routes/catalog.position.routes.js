@@ -26,6 +26,7 @@ publicRouter.get(
   validator.filterAlias,
   validator.lastId,
   validator.limit,
+  validator.offset,
   validator.filterLevel,
   validator.isPublic,
 
