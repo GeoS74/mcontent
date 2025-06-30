@@ -84,9 +84,17 @@ module.exports.limit = async (ctx, next) => {
   const defaultLimit = 25;
 
   ctx.query.limit = parseInt(ctx.query.limit, 10) || defaultLimit;
-  if (ctx.query.limit > 25) {
+  if (ctx.query.limit > defaultLimit) {
     ctx.query.limit = defaultLimit;
   }
+
+  await next();
+};
+
+module.exports.offset = async (ctx, next) => {
+  const defaultOffset = 0;
+
+  ctx.query.offset = parseInt(ctx.query.offset, 10) || defaultOffset;
 
   await next();
 };

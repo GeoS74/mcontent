@@ -256,6 +256,7 @@ async function _searchSide(data) {
       _id: -1,
       //  score: { $meta: "textScore" } //сортировка по релевантности
     })
+    .skip(data.offset)
     .limit(data.limit)
     .populate({ path: 'level' });
 }
@@ -265,6 +266,7 @@ function _makeFilterRules({
   level,
   lastId,
   limit,
+  offset,
   isPublic,
 }) {
   const filter = {};
@@ -293,6 +295,6 @@ function _makeFilterRules({
   }
 
   return {
-    filter, projection, limit, populateMatch,
+    filter, projection, limit, offset, populateMatch,
   };
 }
