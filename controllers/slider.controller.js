@@ -108,7 +108,7 @@ function _deleteSlide(id) {
 }
 
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/slider/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/slider/${image.newFilename}.webp`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
   _deleteFile(image.filepath);
@@ -119,15 +119,22 @@ async function _processingImage(image) {
   //   .catch((error) => logger.error(error.mesasge));
 
   return {
-    originalName: image.originalFilename,
-    fileName: image.newFilename,
+    originalName: `${image.originalFilename}.webp`,
+    fileName: `${image.newFilename}.webp`,
   };
 }
 
 async function _resizePhoto(filepath, newFilename) {
   return sharp(filepath)
+    .toFormat('webp', {
+      quality: 80, // Качество от 1 до 100
+      lossless: false, // Использовать lossless-сжатие
+      nearLossless: false,
+      alphaQuality: 100, // Качество альфа-канала
+      effort: 6, // Уровень оптимизации (1-6)
+    })
     .resize({
-      width: 1900,
+      width: 1200,
       // height: 350,
     })
     .toFile(newFilename);

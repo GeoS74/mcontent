@@ -108,22 +108,29 @@ function _deleteTeamUnit(id) {
 }
 
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/team/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/images/team/${image.newFilename}.webp`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
   _deleteFile(image.filepath);
 
   return {
-    originalName: image.originalFilename,
-    fileName: image.newFilename,
+    originalName: `${image.originalFilename}.webp`,
+    fileName: `${image.newFilename}.webp`,
   };
 }
 
 async function _resizePhoto(filepath, newFilename) {
   return sharp(filepath)
     .resize({
-      width: 700,
+      width: 350,
       // height: 350,
+    })
+    .toFormat('webp', {
+      quality: 80, // Качество от 1 до 100
+      lossless: false, // Использовать lossless-сжатие
+      nearLossless: false,
+      alphaQuality: 100, // Качество альфа-канала
+      effort: 6, // Уровень оптимизации (1-6)
     })
     .toFile(newFilename);
 }

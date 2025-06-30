@@ -179,14 +179,14 @@ async function _processingPDF(pdf) {
 }
 
 async function _processingImage(image) {
-  await _resizePhoto(image.filepath, path.join(__dirname, `../files/catalog/position/images/${image.newFilename}`))
+  await _resizePhoto(image.filepath, path.join(__dirname, `../files/catalog/position/images/${image.newFilename}.webp`))
     .catch((error) => logger.error(`error resizing image: ${error.message}`));
 
   deleteFile(image.filepath);
 
   return {
-    originalName: image.originalFilename,
-    fileName: image.newFilename,
+    originalName: `${image.originalFilename}.webp`,
+    fileName: `${image.newFilename}.webp`,
   };
 }
 
@@ -196,6 +196,13 @@ async function _resizePhoto(filepath, newFilename) {
       width: 400,
       height: 400,
       fit: 'cover',
+    })
+    .toFormat('webp', {
+      quality: 80, // Качество от 1 до 100
+      lossless: false, // Использовать lossless-сжатие
+      nearLossless: false,
+      alphaQuality: 100, // Качество альфа-канала
+      effort: 6, // Уровень оптимизации (1-6)
     })
     .toFile(newFilename);
 }
