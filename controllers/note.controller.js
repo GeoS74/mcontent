@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const path = require('path');
 const Note = require('../models/Note');
-const mapper = require('../mappers/slider.mapper');
+const mapper = require('../mappers/note.mapper');
 const logger = require('../libs/logger');
 const { deleteFile } = require('../libs/common');
 
@@ -11,6 +11,17 @@ module.exports.get = async (ctx) => {
   if (!note) {
     ctx.throw(404, 'note not found');
   }
+  ctx.status = 200;
+  ctx.body = mapper(note);
+};
+
+module.exports.getByAlias = async (ctx) => {
+  const note = await _getByAlias(ctx.params.alias);
+
+  if (!note) {
+    ctx.throw(404, 'note not found');
+  }
+
   ctx.status = 200;
   ctx.body = mapper(note);
 };
@@ -130,6 +141,10 @@ async function _resizePhoto(filepath, newFilename) {
       effort: 6, // Уровень оптимизации (1-6)
     })
     .toFile(newFilename);
+}
+
+function _getByAlias(alias) {
+  return Note.findOne({ alias });
 }
 
 // /**

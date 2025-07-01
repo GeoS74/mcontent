@@ -71,6 +71,11 @@ module.exports.isPublic = async (ctx, next) => {
 
 module.exports.title = async (ctx, next) => {
   ctx.request.body.title = ctx.request.body?.title?.trim() || '';
+
+  if (!ctx.request.body.title) {
+    ctx.throw(400, 'title is empty');
+  }
+
   await next();
 };
 
@@ -84,5 +89,10 @@ module.exports.objectId = async (ctx, next) => {
     ctx.throw(400, 'invalid note id');
   }
 
+  await next();
+};
+
+module.exports.alias = async (ctx, next) => {
+  ctx.params.alias = ctx.params.alias?.trim() || '';
   await next();
 };

@@ -28,6 +28,12 @@ publicRouter.get(
   controller.search,
 );
 
+publicRouter.get(
+  '/:alias',
+  validator.alias,
+  controller.getByAlias,
+);
+
 module.exports.publicRoutes = publicRouter.routes();
 
 /*

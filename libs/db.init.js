@@ -60,6 +60,11 @@ const Contact = require('../models/Contact');
       alias: 'about',
     },
     {
+      name: 'Статьи компании',
+      tplFileName: 'simple-article.html',
+      alias: 'simple-article',
+    },
+    {
       name: 'Страница контактов',
       tplFileName: 'contact.html',
       alias: 'contact',
