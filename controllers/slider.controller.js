@@ -183,7 +183,7 @@ module.exports.search = async (ctx) => {
 async function _searchSide(data) {
   return Slide.find(data.filter, data.projection)
     .sort({
-      _id: -1,
+      _id: 1,
     })
     .limit(data.limit);
 }
